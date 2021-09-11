@@ -42,16 +42,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Check the cookie sent by the client for any request and set the req.user to the authenticated user
 app.use(function (req, res, next) {
   const token = req.cookies.token;
 
   if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
       if (err) {
         return next();
       }
       User.findOne({
-        where: { id: decoded.id },
+        where: { id: decodedToken.id },
       }).then((user) => {
         req.user = user;
         return next();

@@ -27,4 +27,19 @@ router.get('/:username', async (req, res, next) => {
   }
 });
 
+// find all users
+router.get('/', async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const users = await User.findAll();
+
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

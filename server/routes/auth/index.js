@@ -4,13 +4,11 @@ const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res, next) => {
   try {
-    // expects {username, email, password} in req.body
+    // expects {username, password} in req.body
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res
-        .status(400)
-        .json({ error: 'Username and password required' });
+      return res.status(400).json({ error: 'Username and password required' });
     }
 
     if (password.length < 6) {
@@ -102,7 +100,7 @@ router.get('/user', (req, res, next) => {
   if (req.user) {
     return res.json(req.user);
   } else {
-    return res.json({});
+    return res.json({ message: 'No logged user' });
   }
 });
 
