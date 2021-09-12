@@ -8,10 +8,6 @@ const User = db.define('user', {
     unique: true,
     allowNull: false,
   },
-  deposit: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-  },
   password: {
     type: Sequelize.STRING,
     validate: {
@@ -21,6 +17,14 @@ const User = db.define('user', {
     get() {
       return () => this.getDataValue('password');
     },
+  },
+  deposit: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+  },
+  roleId: {
+    type: Sequelize.INTEGER,
+    defaultValue: 1,
   },
   salt: {
     type: Sequelize.STRING,

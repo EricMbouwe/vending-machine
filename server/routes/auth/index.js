@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const router = require('express').Router();
 const { User } = require('../../db/models');
 const jwt = require('jsonwebtoken');
@@ -92,15 +94,17 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
+// Logout the user
 router.delete('/logout', (req, res, next) => {
   res.clearCookie('token').sendStatus(204);
 });
 
+// Get the logged in user
 router.get('/user', (req, res, next) => {
   if (req.user) {
     return res.json(req.user);
   } else {
-    return res.json({ message: 'No logged user' });
+    return res.json({ message: 'No Logged User' });
   }
 });
 

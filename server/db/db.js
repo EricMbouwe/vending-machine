@@ -1,7 +1,9 @@
+require('dotenv').config();
+
 const Sequelize = require('sequelize');
 
 const db = new Sequelize(
-  process.env.DATABASE_URL || 'postgres://eric:0611@localhost:5432/vending_machine',
+  process.env.DATABASE_URL || 'postgres://localhost:5432/vending_machine',
   {
     logging: false,
   },

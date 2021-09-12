@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
-    "test": "NODE_ENV=test ./node_modules/.bin/jest --exit --timeout 30000",
+    "test": "NODE_ENV=test ./node_modules/.bin/jest",
     "seed": "node db/seed.js"
   },
   "dependencies": {
