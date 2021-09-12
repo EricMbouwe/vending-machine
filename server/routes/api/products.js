@@ -5,11 +5,12 @@ const { Product, User } = require('../../db/models');
 // /api/products
 router.get('/', async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
+    // if (!req.user) {
+    //   return res.sendStatus(401);
+    // }
 
-    const products = await Product.findAll();
+    let products = await Product.findAll();
+    // products = await Product.setQuantities(products);
 
     res.json(products);
   } catch (error) {
@@ -19,11 +20,11 @@ router.get('/', async (req, res, next) => {
 
 // Find all by seller
 // /api/products/sellerId
-router.get('/:id', async (req, res, next) => {
+router.get('/:sellerId', async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
+    // if (!req.user) {
+    //   return res.sendStatus(401);
+    // }
 
     const { sellerId } = req.params;
 
@@ -50,12 +51,12 @@ router.get('/:id', async (req, res, next) => {
 // /api/products
 router.post('/', async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
+    // if (!req.user) {
+    //   return res.sendStatus(401);
+    // }
 
-    const sellerId = req.user.id;
-    const { productName, cost } = req.body;
+    // const sellerId = req.user.id;
+    const { productName, cost, sellerId } = req.body;
 
     if (!productName || !cost) {
       return res.status(400).json({ error: 'productName, and cost required' });
@@ -71,13 +72,16 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'cost must be a valid number' });
     }
 
-    const product = await Product.create({
+    let product = await Product.create({
       productName,
       cost,
       sellerId,
     });
 
-    res.json(product);
+    product.amountAvailable = 1;
+    await product.save();
+
+    res.json(product.dataValues);
   } catch (error) {
     next(error);
   }
@@ -87,9 +91,9 @@ router.post('/', async (req, res, next) => {
 // /api/products/productId
 router.put('/:productId', async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
+    // if (!req.user) {
+    //   return res.sendStatus(401);
+    // }
 
     let product = await Product.findOne({
       where: {
@@ -135,9 +139,9 @@ router.put('/:productId', async (req, res, next) => {
 // /api/products/productId
 router.delete('/:productId', async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
+    // if (!req.user) {
+    //   return res.sendStatus(401);
+    // }
 
     const product = await Product.findOne({
       where: {
@@ -152,14 +156,19 @@ router.delete('/:productId', async (req, res, next) => {
         .send('The product with the given id was not found');
     }
 
-    const product = await Product.destroy({
+    await Product.destroy({
       where: {
         id: req.params.productId,
       },
     });
+
+    // product.setAmountAvailable();
+    Product.setAmountAvailable(product);
 
     res.send(product);
   } catch (error) {
     next(error);
   }
 });
+
+module.exports = router;
