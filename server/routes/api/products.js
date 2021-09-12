@@ -10,7 +10,6 @@ router.get('/', async (req, res, next) => {
     // }
 
     let products = await Product.findAll();
-    // products = await Product.setQuantities(products);
 
     res.json(products);
   } catch (error) {

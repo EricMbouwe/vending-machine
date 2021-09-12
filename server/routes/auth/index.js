@@ -32,7 +32,7 @@ router.post('/register', async (req, res, next) => {
         sameSite: true,
         secure: true,
         maxAge: 86400000,
-        httpOnly: true,
+        httpOnly: false,
       });
     }
 
@@ -80,7 +80,7 @@ router.post('/login', async (req, res, next) => {
           sameSite: true,
           secure: true,
           maxAge: 86400000,
-          httpOnly: true,
+          httpOnly: false,
         });
       }
 

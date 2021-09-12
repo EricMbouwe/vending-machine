@@ -21,6 +21,12 @@ const User = db.define('user', {
   deposit: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
+    get() {
+      return () => this.getDataValue('deposit');
+    },
+    set(value) {
+      this.setDataValue('deposit', value);
+    },
   },
   roleId: {
     type: Sequelize.INTEGER,
@@ -36,6 +42,14 @@ const User = db.define('user', {
 
 User.prototype.correctPassword = function (password) {
   return User.encryptPassword(password, this.salt()) === this.password();
+};
+
+User.prototype.dispenseCoins = function (total, denominations) {
+  return denominations.reduce((denominationsHash, denomination) => {
+    denominationsHash[denomination] = Math.floor(total / denomination);
+    total -= Math.floor(total / denomination) * denomination;
+    return denominationsHash;
+  }, {});
 };
 
 User.createSalt = function () {

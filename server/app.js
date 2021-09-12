@@ -45,6 +45,9 @@ app.use((req, res, next) => {
 // Check the cookie sent by the client for any request and set the req.user to the authenticated user
 app.use(function (req, res, next) {
   const token = req.cookies.token;
+  console.log('--------------------------------------------------');
+  console.log('TOKEN', token);
+  console.log('--------------------------------------------------');
 
   if (token) {
     jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
