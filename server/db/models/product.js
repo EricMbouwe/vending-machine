@@ -19,7 +19,7 @@ const Product = db.define('product', {
     type: Sequelize.INTEGER,
     defaultValue: 0,
     set(value) {
-      this.setDataValue('amountAvailable', value + 1);
+      this.setDataValue('amountAvailable', value);
     },
   },
 });
@@ -34,6 +34,14 @@ Product.findProductsBySeller = async function (sellerId) {
   });
 
   return products;
+};
+
+Product.calculateAvailableAmount = async (product) => {
+  return await Product.count({
+    where: {
+      productName: product.productName,
+    },
+  });
 };
 
 module.exports = Product;
