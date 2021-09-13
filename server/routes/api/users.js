@@ -54,7 +54,12 @@ router.post('/deposit', async (req, res, next) => {
     // }
 
     const { amount } = req.body;
-    const user = req.user;
+    // const user = req.user;
+    const user = await User.findOne({
+      where: {
+        id: 1,
+      },
+    });
 
     if (!amount) return res.send('Enter an amount');
     user.deposit = amount;
@@ -72,7 +77,12 @@ router.post('/reset', async (req, res, next) => {
     //   return res.sendStatus(401);
     // }
 
-    const user = req.user;
+    // const user = req.user;
+    const user = await User.findOne({
+      where: {
+        id: 1,
+      },
+    });
 
     let returnedMoney = user.dispenseCoins(user.deposit, [100, 50, 20, 10, 5]);
     user.deposit = 0;
@@ -94,9 +104,14 @@ router.post('/buy', async (req, res, next) => {
     //   return res.sendStatus(401);
     // }
 
-    const user = req.user;
+    // const user = req.user;
+    const user = await User.findOne({
+      where: {
+        id: 1,
+      },
+    });
+
     let totalSpent = 0;
-    let returnedMoney = undefined;
     let reminder = 0;
     const productsList = [];
 
@@ -108,16 +123,27 @@ router.post('/buy', async (req, res, next) => {
       },
     });
 
+    if (!product) return res.send('Sorry this product is not available')
+
     const { cost } = product;
 
     totalSpent = cost * quantity;
     reminder = user.deposit - totalSpent;
+
+    if (reminder < 0)
+      return res.send("Sorry you don't have enougth money to buy this product");
+
     productsList.push(product);
 
+    await Product.destroy({
+      where: {
+        id: productId,
+      },
+    });
     const count = await Product.calculateAvailableAmount(product);
     product.amountAvailable = count - quantity;
 
-    returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);
+    const returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);
 
     user.update({ deposit: 0 });
 
