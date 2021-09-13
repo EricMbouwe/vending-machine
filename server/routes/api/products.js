@@ -17,9 +17,38 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+// Find One by id
+// /api/products/productId
+router.get('/:productId', async (req, res, next) => {
+  try {
+    // if (!req.user) {
+    //   return res.sendStatus(401);
+    // }
+
+    const { productId } = req.params;
+
+    const product = await Product.findOne({
+      where: {
+        id: productId,
+      },
+    });
+
+    // if not existing return 404
+    if (!product) {
+      return res
+        .status(404)
+        .send('The product with the given id was not found');
+    }
+
+    res.json(product);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Find all by seller
-// /api/products/sellerId
-router.get('/:sellerId', async (req, res, next) => {
+// /api/products/seller/sellerId
+router.get('/seller/:sellerId', async (req, res, next) => {
   try {
     // if (!req.user) {
     //   return res.sendStatus(401);

@@ -61,8 +61,14 @@ router.post('/deposit', async (req, res, next) => {
       },
     });
 
-    if (!amount) return res.send('Enter an amount');
-    user.deposit = amount;
+    if (!amount) return res.send('Amount is required');
+    if (user.deposit > 0) {
+      return res.send(
+        'Your account is already filled, make a purchase or reset your deposit to continue',
+      );
+    }
+
+    user.update({ deposit: amount });
 
     res.json(user.dataValues);
   } catch (error) {
@@ -85,8 +91,8 @@ router.post('/reset', async (req, res, next) => {
     });
 
     let returnedMoney = user.dispenseCoins(user.deposit, [100, 50, 20, 10, 5]);
-    user.deposit = 0;
-    await user.save();
+
+    user.update({ deposit: 0 });
 
     res.json({
       ...user.dataValues,
@@ -107,7 +113,7 @@ router.post('/buy', async (req, res, next) => {
     // const user = req.user;
     const user = await User.findOne({
       where: {
-        id: 1,
+        username: 'thomas',
       },
     });
 
@@ -123,7 +129,19 @@ router.post('/buy', async (req, res, next) => {
       },
     });
 
-    if (!product) return res.send('Sorry this product is not available')
+    if (!product) return res.send('Sorry this product is not available');
+
+    const { count, rows } = await Product.findAndCountAll({
+      where: {
+        productName: product.productName,
+        cost: product.cost,
+      },
+    });
+
+    if (quantity > count)
+      return res.send(
+        `Sorry there is only ${count} ${product.productName} available`,
+      );
 
     const { cost } = product;
 
@@ -133,19 +151,23 @@ router.post('/buy', async (req, res, next) => {
     if (reminder < 0)
       return res.send("Sorry you don't have enougth money to buy this product");
 
-    productsList.push(product);
+    for (let i = 0; i < quantity; i++) {
+      await Product.destroy({
+        where: {
+          id: rows[i].id,
+        },
+      });
+      rows[i].update({ amountAvailable: count - quantity });
+      productsList.push(rows[i]);
+    }
 
-    await Product.destroy({
-      where: {
-        id: productId,
-      },
-    });
-    const count = await Product.calculateAvailableAmount(product);
-    product.amountAvailable = count - quantity;
+    for (let i = 0; i < count; i++) {
+      rows[i].update({ amountAvailable: count - quantity });
+    }
 
     const returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);
 
-    user.update({ deposit: 0 });
+    // user.update({ deposit: 0 });
 
     res.json({
       ...user.dataValues,

@@ -21,9 +21,6 @@ const User = db.define('user', {
   deposit: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
-    get() {
-      return () => this.getDataValue('deposit');
-    },
     set(value) {
       this.setDataValue('deposit', value);
     },

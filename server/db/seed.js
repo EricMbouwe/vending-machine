@@ -29,18 +29,21 @@ async function seed() {
     productName: 'beef',
     cost: 368,
     sellerId: 1,
+    amountAvailable: 1,
   });
 
   const tomato = await Product.create({
     productName: 'tomato',
     cost: 345,
     sellerId: 1,
+    amountAvailable: 1,
   });
 
   const coconut = await Product.create({
     productName: 'coconut',
     cost: 185,
     sellerId: 2,
+    amountAvailable: 1,
   });
 
   const buyer = await Role.create({
