@@ -68,55 +68,49 @@ router.get('/seller/:sellerId', async (req, res, next) => {
 
 // Create a new product
 // /api/products
-router.post(
-  '/',
-  // authRole('seller'),
-  async (req, res, next) => {
-    try {
-      // const sellerId = req.user.id;
-      const { productName, cost, sellerId } = req.body;
+router.post('/', authRole('seller'), async (req, res, next) => {
+  try {
+    // const sellerId = req.user.id;
+    const { productName, cost, sellerId } = req.body;
 
-      if (!productName || !cost) {
-        return res
-          .status(400)
-          .json({ error: 'productName, and cost required' });
-      }
-
-      if (productName.length < 3) {
-        return res
-          .status(400)
-          .json({ error: 'productName must be at least 3 characters' });
-      }
-
-      if (typeof cost != 'number') {
-        return res.status(400).json({ error: 'cost must be a valid number' });
-      }
-
-      let product = await Product.create({
-        productName,
-        cost,
-        sellerId,
-      });
-
-      const { count, rows } = await Product.calculateAvailableAmount(product);
-
-      product.update({ amountAvailable: count });
-      Product.updateAmountAvailableForAll(rows, count);
-
-      res.json({ ...product.dataValues, count, rows });
-    } catch (error) {
-      next(error);
+    if (!productName || !cost) {
+      return res.status(400).json({ error: 'productName, and cost required' });
     }
-  },
-);
+
+    if (productName.length < 3) {
+      return res
+        .status(400)
+        .json({ error: 'productName must be at least 3 characters' });
+    }
+
+    if (typeof cost != 'number') {
+      return res.status(400).json({ error: 'cost must be a valid number' });
+    }
+
+    let product = await Product.create({
+      productName,
+      cost,
+      sellerId,
+    });
+
+    const { count, rows } = await Product.calculateAvailableAmount(product);
+
+    product.update({ amountAvailable: count });
+    Product.updateAmountAvailableForAll(rows, count);
+
+    res.json({ ...product.dataValues, count, rows });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Update a product
 // /api/products/productId
 router.put(
   '/:productId',
   setProduct,
-  //   authRole('seller'),
-  //   authUpdateProduct,
+  authRole('seller'),
+  authUpdateProduct,
   async (req, res, next) => {
     try {
       let product = req.product;
@@ -156,8 +150,8 @@ router.put(
 router.delete(
   '/:productId',
   setProduct,
-  //   authRole('seller'),
-  //   authDeleteProduct,
+  authRole('seller'),
+  authDeleteProduct,
   async (req, res, next) => {
     try {
       const product = req.product;

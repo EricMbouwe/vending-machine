@@ -27,12 +27,12 @@ router.post('/register', async (req, res, next) => {
       { expiresIn: 86400 },
     );
 
-    if (!req.cookies || !req.cookies.token) {
+    if (!req.cookies.token || !req.cookies) {
       res.cookie('token', token, {
         sameSite: true,
         secure: true,
         maxAge: 86400000,
-        httpOnly: false,
+        httpOnly: true,
       });
     }
 
@@ -80,7 +80,7 @@ router.post('/login', async (req, res, next) => {
           sameSite: true,
           secure: true,
           maxAge: 86400000,
-          httpOnly: false,
+          httpOnly: true,
         });
       }
 
