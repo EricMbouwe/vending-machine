@@ -161,6 +161,7 @@ router.post('/buy', async (req, res, next) => {
       productsList.push(rows[i]);
     }
 
+    //update remaining product available quantity
     for (let i = 0; i < count; i++) {
       rows[i].update({ amountAvailable: count - quantity });
     }

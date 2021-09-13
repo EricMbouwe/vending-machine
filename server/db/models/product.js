@@ -37,11 +37,17 @@ Product.findProductsBySeller = async function (sellerId) {
 };
 
 Product.calculateAvailableAmount = async (product) => {
-  return await Product.count({
+  return await Product.findAndCountAll({
     where: {
       productName: product.productName,
     },
   });
+};
+
+Product.updateAmountAvailableForAll = (products, count) => {
+  for (let i = 0; i < count; i++) {
+    products[i].update({ amountAvailable: count });
+  }
 };
 
 module.exports = Product;

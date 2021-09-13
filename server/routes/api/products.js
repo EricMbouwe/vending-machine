@@ -106,12 +106,12 @@ router.post('/', async (req, res, next) => {
       sellerId,
     });
 
-    const count = await Product.calculateAvailableAmount(product);
+    const { count, rows } = await Product.calculateAvailableAmount(product);
 
-    product.amountAvailable = count;
-    await product.save();
+    product.update({ amountAvailable: count });
+    Product.updateAmountAvailableForAll(rows, count);
 
-    res.json(product.dataValues);
+    res.json({ ...product.dataValues, count, rows });
   } catch (error) {
     next(error);
   }
@@ -192,9 +192,10 @@ router.delete('/:productId', async (req, res, next) => {
       },
     });
 
-    const count = await Product.calculateAvailableAmount(product);
+    const { count, rows } = await Product.calculateAvailableAmount(product);
 
-    product.amountAvailable = count - 1;
+    product.update({ amountAvailable: count });
+    Product.updateAmountAvailableForAll(rows, count);
 
     res.send(product);
   } catch (error) {
