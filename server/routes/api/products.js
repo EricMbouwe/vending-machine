@@ -1,5 +1,10 @@
 const router = require('express').Router();
 const { Product, User } = require('../../db/models');
+const { authRole } = require('../../authHelper');
+const {
+  canUpdateProduct,
+  canDeleteProduct,
+} = require('../permissions/product');
 
 // find All
 // /api/products
@@ -25,7 +30,6 @@ router.get('/:productId', async (req, res, next) => {
       },
     });
 
-    // if not existing return 404
     if (!product) {
       return res
         .status(404)
@@ -50,7 +54,6 @@ router.get('/seller/:sellerId', async (req, res, next) => {
       },
     });
 
-    // if not existing return 404
     if (!seller) {
       return res.status(404).send('The seller with the given id was not found');
     }
@@ -65,118 +68,144 @@ router.get('/seller/:sellerId', async (req, res, next) => {
 
 // Create a new product
 // /api/products
-router.post('/', async (req, res, next) => {
-  try {
-    // const sellerId = req.user.id;
-    const { productName, cost, sellerId } = req.body;
+router.post(
+  '/',
+  // authRole('seller'),
+  async (req, res, next) => {
+    try {
+      // const sellerId = req.user.id;
+      const { productName, cost, sellerId } = req.body;
 
-    if (!productName || !cost) {
-      return res.status(400).json({ error: 'productName, and cost required' });
+      if (!productName || !cost) {
+        return res
+          .status(400)
+          .json({ error: 'productName, and cost required' });
+      }
+
+      if (productName.length < 3) {
+        return res
+          .status(400)
+          .json({ error: 'productName must be at least 3 characters' });
+      }
+
+      if (typeof cost != 'number') {
+        return res.status(400).json({ error: 'cost must be a valid number' });
+      }
+
+      let product = await Product.create({
+        productName,
+        cost,
+        sellerId,
+      });
+
+      const { count, rows } = await Product.calculateAvailableAmount(product);
+
+      product.update({ amountAvailable: count });
+      Product.updateAmountAvailableForAll(rows, count);
+
+      res.json({ ...product.dataValues, count, rows });
+    } catch (error) {
+      next(error);
     }
-
-    if (productName.length < 3) {
-      return res
-        .status(400)
-        .json({ error: 'productName must be at least 3 characters' });
-    }
-
-    if (typeof cost != 'number') {
-      return res.status(400).json({ error: 'cost must be a valid number' });
-    }
-
-    let product = await Product.create({
-      productName,
-      cost,
-      sellerId,
-    });
-
-    const { count, rows } = await Product.calculateAvailableAmount(product);
-
-    product.update({ amountAvailable: count });
-    Product.updateAmountAvailableForAll(rows, count);
-
-    res.json({ ...product.dataValues, count, rows });
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 // Update a product
 // /api/products/productId
-router.put('/:productId', async (req, res, next) => {
-  try {
-    let product = await Product.findOne({
-      where: {
-        id: req.params.productId,
-      },
-    });
+router.put(
+  '/:productId',
+  setProduct,
+  //   authRole('seller'),
+  //   authUpdateProduct,
+  async (req, res, next) => {
+    try {
+      let product = req.product;
 
-    const { productName, cost } = req.body;
+      const { productName, cost } = req.body;
 
-    // if not existing return 404
-    if (!product) {
-      return res
-        .status(404)
-        .send('The product with the given id was not found');
+      if (!productName || !cost) {
+        return res
+          .status(400)
+          .json({ error: 'productName, and cost required' });
+      }
+
+      if (productName.length < 3) {
+        return res
+          .status(400)
+          .json({ error: 'productName must be at least 3 characters' });
+      }
+
+      if (typeof cost != 'number') {
+        return res.status(400).json({ error: 'cost must be a valid number' });
+      }
+
+      await product.update({
+        productName: req.body.productName,
+        cost: req.body.cost,
+      });
+
+      res.send(product);
+    } catch (error) {
+      next(error);
     }
-
-    if (!productName || !cost) {
-      return res.status(400).json({ error: 'productName, and cost required' });
-    }
-
-    if (productName.length < 3) {
-      return res
-        .status(400)
-        .json({ error: 'productName must be at least 3 characters' });
-    }
-
-    if (typeof cost != 'number') {
-      return res.status(400).json({ error: 'cost must be a valid number' });
-    }
-
-    product = await product.update({
-      productName: req.body.productName,
-      cost: req.body.cost,
-    });
-
-    res.send(product);
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 // Delete a product
 // /api/products/productId
-router.delete('/:productId', async (req, res, next) => {
-  try {
-    const product = await Product.findOne({
-      where: {
-        id: req.params.productId,
-      },
-    });
+router.delete(
+  '/:productId',
+  setProduct,
+  //   authRole('seller'),
+  //   authDeleteProduct,
+  async (req, res, next) => {
+    try {
+      const product = req.product;
 
-    // if not existing return 404
-    if (!product) {
-      return res
-        .status(404)
-        .send('The product with the given id was not found');
+      await product.destroy();
+
+      const { count, rows } = await Product.calculateAvailableAmount(product);
+
+      product.update({ amountAvailable: count });
+      Product.updateAmountAvailableForAll(rows, count);
+
+      res.send(product);
+    } catch (error) {
+      next(error);
     }
+  },
+);
 
-    await Product.destroy({
-      where: {
-        id: req.params.productId,
-      },
-    });
+async function setProduct(req, res, next) {
+  req.product = await Product.findOne({
+    where: {
+      id: req.params.productId,
+    },
+  });
 
-    const { count, rows } = await Product.calculateAvailableAmount(product);
-
-    product.update({ amountAvailable: count });
-    Product.updateAmountAvailableForAll(rows, count);
-
-    res.send(product);
-  } catch (error) {
-    next(error);
+  // if not existing return 404
+  if (!req.product) {
+    return res.status(404).send('The product with the given id was not found');
   }
-});
+  next();
+}
+
+function authUpdateProduct(req, res, next) {
+  if (!canUpdateProduct(req.user, req.product)) {
+    res.status(401);
+    return res.send('Not Allowed');
+  }
+
+  next();
+}
+
+function authDeleteProduct(req, res, next) {
+  if (!canDeleteProduct(req.user, req.product)) {
+    res.status(401);
+    return res.send('Not Allowed');
+  }
+
+  next();
+}
 
 module.exports = router;

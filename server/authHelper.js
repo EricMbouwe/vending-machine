@@ -1,5 +1,7 @@
+const { Role } = require('./db/models');
+
 function authUser(req, res, next) {
-  if (req.user == null) {
+  if (!req.user) {
     res.status(401);
     return res.send('You need to sign in');
   }
@@ -11,7 +13,7 @@ function authRole(role) {
   return (req, res, next) => {
     if (req.user.role !== role) {
       res.status(403);
-      return res.send('Not allowed to request this endpoint');
+      return res.send('Not allowed');
     }
 
     next();
