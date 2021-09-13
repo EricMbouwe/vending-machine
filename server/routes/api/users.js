@@ -5,10 +5,6 @@ const { Op } = require('sequelize');
 // find user by username
 router.get('/:username', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     const { username } = req.params;
 
     const user = await User.findOne({
@@ -32,10 +28,6 @@ router.get('/:username', async (req, res, next) => {
 // find all users
 router.get('/', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     const users = await User.findAll();
 
     if (users.length < 1) return res.send('No user found');
@@ -49,17 +41,14 @@ router.get('/', async (req, res, next) => {
 // Make a deposit
 router.post('/deposit', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
-    const { amount } = req.body;
     // const user = req.user;
     const user = await User.findOne({
       where: {
         id: 1,
       },
     });
+
+    const { amount } = req.body;
 
     if (!amount) return res.send('Amount is required');
     if (user.deposit > 0) {
@@ -79,10 +68,6 @@ router.post('/deposit', async (req, res, next) => {
 // reset a deposit
 router.post('/reset', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     // const user = req.user;
     const user = await User.findOne({
       where: {
@@ -90,7 +75,10 @@ router.post('/reset', async (req, res, next) => {
       },
     });
 
-    let returnedMoney = user.dispenseCoins(user.deposit, [100, 50, 20, 10, 5]);
+    const returnedMoney = user.dispenseCoins(
+      user.deposit,
+      [100, 50, 20, 10, 5],
+    );
 
     user.update({ deposit: 0 });
 
@@ -106,10 +94,6 @@ router.post('/reset', async (req, res, next) => {
 // Make a purchase
 router.post('/buy', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     // const user = req.user;
     const user = await User.findOne({
       where: {
@@ -168,7 +152,7 @@ router.post('/buy', async (req, res, next) => {
 
     const returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);
 
-    // user.update({ deposit: 0 });
+    user.update({ deposit: 0 });
 
     res.json({
       ...user.dataValues,

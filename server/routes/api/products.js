@@ -5,10 +5,6 @@ const { Product, User } = require('../../db/models');
 // /api/products
 router.get('/', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     let products = await Product.findAll();
 
     res.json(products);
@@ -21,10 +17,6 @@ router.get('/', async (req, res, next) => {
 // /api/products/productId
 router.get('/:productId', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     const { productId } = req.params;
 
     const product = await Product.findOne({
@@ -50,10 +42,6 @@ router.get('/:productId', async (req, res, next) => {
 // /api/products/seller/sellerId
 router.get('/seller/:sellerId', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     const { sellerId } = req.params;
 
     const seller = await User.findOne({
@@ -79,10 +67,6 @@ router.get('/seller/:sellerId', async (req, res, next) => {
 // /api/products
 router.post('/', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     // const sellerId = req.user.id;
     const { productName, cost, sellerId } = req.body;
 
@@ -121,10 +105,6 @@ router.post('/', async (req, res, next) => {
 // /api/products/productId
 router.put('/:productId', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     let product = await Product.findOne({
       where: {
         id: req.params.productId,
@@ -169,10 +149,6 @@ router.put('/:productId', async (req, res, next) => {
 // /api/products/productId
 router.delete('/:productId', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     const product = await Product.findOne({
       where: {
         id: req.params.productId,

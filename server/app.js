@@ -7,6 +7,8 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./db');
 const { User } = require('./db/models');
+const { authUser } = require('./authHelper');
+
 // create store for sessions to persist in our database
 const sessionStore = new SequelizeStore({ db });
 
@@ -68,7 +70,7 @@ app.use(function (req, res, next) {
 
 // require api routes here after I create them
 app.use('/auth', require('./routes/auth'));
-app.use('/api', require('./routes/api'));
+app.use('/api', authUser, require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
