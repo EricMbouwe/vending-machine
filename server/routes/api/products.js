@@ -70,8 +70,8 @@ router.get('/seller/:sellerId', async (req, res, next) => {
 // /api/products
 router.post('/', authRole('seller'), async (req, res, next) => {
   try {
-    // const sellerId = req.user.id;
-    const { productName, cost, sellerId } = req.body;
+    const sellerId = req.user.id;
+    const { productName, cost } = req.body;
 
     if (!productName || !cost) {
       return res.status(400).json({ error: 'productName, and cost required' });

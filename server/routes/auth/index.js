@@ -27,7 +27,7 @@ router.post('/register', async (req, res, next) => {
       { expiresIn: 86400 },
     );
 
-    if (!req.cookies.token || !req.cookies) {
+    if (!req.cookies || !req.cookies.token) {
       res.cookie('token', token, {
         sameSite: true,
         secure: true,
