@@ -37,12 +37,9 @@ router.post('/register', async (req, res, next) => {
     }
 
     const role = await Role.getRoleName(roleId);
+    user.update({ role: role });
 
-    res.json({
-      ...user.dataValues,
-      role,
-      token,
-    });
+    res.json(user);
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.status(401).json({ error: 'User already exists' });
@@ -87,10 +84,7 @@ router.post('/login', async (req, res, next) => {
         });
       }
 
-      res.json({
-        ...user.dataValues,
-        token,
-      });
+      res.json(user);
     }
   } catch (error) {
     next(error);
@@ -99,7 +93,7 @@ router.post('/login', async (req, res, next) => {
 
 // Logout the user
 router.delete('/logout', (req, res, next) => {
-  res.clearCookie('token').sendStatus(204);
+  return res.clearCookie('token').sendStatus(204);
 });
 
 // Get the logged in user

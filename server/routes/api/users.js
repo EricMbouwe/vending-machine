@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User, Product } = require('../../db/models');
+const { User, Product, Role } = require('../../db/models');
 const { Op } = require('sequelize');
 const { authRole } = require('../../authHelper');
 
@@ -33,6 +33,12 @@ router.get('/', async (req, res, next) => {
 
     if (users.length < 1) return res.send('No user found');
 
+    for (user of users) {
+      const roleId = user.roleId;
+      const role = await Role.getRoleName(roleId);
+      user.update({ role: role });
+    }
+
     res.json(users);
   } catch (error) {
     next(error);
@@ -55,7 +61,7 @@ router.post('/deposit', authRole('buyer'), async (req, res, next) => {
 
     user.update({ deposit: amount });
 
-    res.json(user.dataValues);
+    res.json(user);
   } catch (error) {
     next(error);
   }

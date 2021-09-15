@@ -29,6 +29,10 @@ const User = db.define('user', {
     type: Sequelize.INTEGER,
     defaultValue: 1,
   },
+  role: {
+    type: Sequelize.STRING,
+    defaultValue: 'buyer',
+  },
   salt: {
     type: Sequelize.STRING,
     get() {

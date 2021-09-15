@@ -20,22 +20,9 @@ router.get('/', async (req, res, next) => {
 
 // Find One by id
 // /api/products/productId
-router.get('/:productId', async (req, res, next) => {
+router.get('/:productId', setProduct, async (req, res, next) => {
   try {
-    const { productId } = req.params;
-
-    const product = await Product.findOne({
-      where: {
-        id: productId,
-      },
-    });
-
-    if (!product) {
-      return res
-        .status(404)
-        .send('The product with the given id was not found');
-    }
-
+    const { product } = req;
     res.json(product);
   } catch (error) {
     next(error);
