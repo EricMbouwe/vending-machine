@@ -15,11 +15,14 @@ function Home() {
   return (
     <Box>
       <h1>Home page</h1>
-      <button onClick={handleLogout}>Logout</button>
+      <Button onClick={handleLogout}>Logout</Button>
     </Box>
   );
 }
 
 const Box = styled.div``;
+const Button = styled.button`
+  cursor: pointer;
+`;
 
 export default Home;

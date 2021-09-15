@@ -111,4 +111,15 @@ router.get('/user', (req, res, next) => {
   }
 });
 
+// Get roles
+router.get('/roles', async (req, res, next) => {
+  try {
+    const roles = await Role.getRoles();
+
+    res.json(roles);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

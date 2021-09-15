@@ -80,8 +80,8 @@ function Signup() {
             <Grid>
               <span>Who are you: </span>
               <select value={roleId} onChange={handleChange} name="roleId">
-                <option defaultValue={1}>buyer</option>
-                <option value={2}>seller</option>
+                <option defaultValue={1}>Buyer</option>
+                <option value={2}>Seller</option>
               </select>
             </Grid>
 

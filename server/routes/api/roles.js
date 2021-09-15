@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Role } = require('../../db/models');
+const { authRole } = require('../../authHelper');
 
 // Get roles
 router.get('/', async (req, res, next) => {
@@ -13,7 +14,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // Add a role
-router.post('/', async (req, res, next) => {
+router.post('/', authRole('admin'), async (req, res, next) => {
   try {
     const { name } = req.body;
 
