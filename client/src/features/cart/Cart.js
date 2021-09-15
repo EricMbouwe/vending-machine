@@ -1,18 +1,29 @@
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
+import { makePurchase } from '../user/userSlice';
 
 function Cart() {
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { cartList, total } = useSelector((state) => state.cart);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [amount, setAmount] = useState(0);
 
-  const handleBuy = (productId, quantity) => {
+  const handleBuy = () => {
     console.log('Buy');
-    // dispatch(buy(productId, quantity));
+    const productId = cartList[0].id;
+    dispatch(makePurchase({ productId, quantity }));
   };
 
-  console.log('QUANTITY', quantity);
+  const handleChangeQuantity = (e) => {
+    const value = parseInt(e.target.value);
+    let totalTopay = 0;
+
+    setQuantity(value);
+
+    totalTopay = value * cartList[0]?.cost;
+    setAmount(totalTopay);
+  };
 
   return (
     <Box>
@@ -27,12 +38,16 @@ function Cart() {
             value={quantity}
             type="number"
             min="0"
-            onChange={(e) => setQuantity(e.target.value)}
+            onChange={handleChangeQuantity}
           />
 
-          <Button type="submit">Buy</Button>
+          <Button onClick={handleBuy}>Buy</Button>
         </Product>
       )}
+      <Box>
+        <h3>Total</h3>
+        <span>{amount}</span>
+      </Box>
     </Box>
   );
 }

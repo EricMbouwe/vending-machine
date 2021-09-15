@@ -19,10 +19,13 @@ export const cartSlice = createSlice({
       );
       state.total -= 1;
     },
+    IncrementTotal: (state, action) => {
+      state.total += action.payload.value;
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, IncrementTotal } = cartSlice.actions;
 
 export const selectCartList = (state) => state.cartList;
 

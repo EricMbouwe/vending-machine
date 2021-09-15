@@ -1,8 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchUser, login, logout, register } from './userAPI';
+import {
+  fetchUser,
+  login,
+  logout,
+  register,
+  buy,
+  reset,
+  deposit,
+} from './userAPI';
 
 const initialState = {
   data: {},
+  returnedMoney: {},
+  totalSpent: 0,
+  productsList: [],
   status: null,
 };
 
@@ -27,6 +38,27 @@ export const loginUser = createAsyncThunk('user/login', async (credentials) => {
 export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logout();
 });
+
+export const makePurchase = createAsyncThunk('user/buy', async (body) => {
+  const data = await buy(body);
+  return data;
+});
+
+export const makeDeposit = createAsyncThunk(
+  'user/makeDeposit',
+  async (body) => {
+    const data = await deposit(body);
+    return data;
+  },
+);
+
+export const resetDeposit = createAsyncThunk(
+  'user/resetDeposit',
+  async (body) => {
+    const data = await reset(body);
+    return data;
+  },
+);
 
 export const userSlice = createSlice({
   name: 'user',
@@ -56,6 +88,18 @@ export const userSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.data = {};
+      })
+      .addCase(makePurchase.fulfilled, (state, action) => {
+        state.returnedMoney = action.payload.returnedMoney;
+        state.totalSpent = action.payload.totalSpent;
+        state.productsList = action.payload.productsList;
+      })
+      .addCase(resetDeposit.fulfilled, (state, action) => {
+        state.data.deposit = 0;
+        state.returnedMoney = action.payload.returnedMoney;
+      })
+      .addCase(makeDeposit.fulfilled, (state, action) => {
+        state.data.deposit = action.payload.deposit;
       });
   },
 });

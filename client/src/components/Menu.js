@@ -4,7 +4,8 @@ import { addToCart } from '../features/cart/cartSlice';
 
 function Menu() {
   const { products } = useSelector((state) => state.products);
-  const { cartList, total } = useSelector((state) => state.cart);
+  const { total } = useSelector((state) => state.cart);
+  const { data: user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const handleSelect = (product) => {
@@ -13,13 +14,10 @@ function Menu() {
       alert('You can not add two different product at a time');
       return;
     }
-    console.log('SELECTED PRD', product);
     // Check if product already in cart
 
     dispatch(addToCart(product));
   };
-
-  console.log('CARTLIST', cartList);
 
   return (
     <Box>
@@ -30,7 +28,9 @@ function Menu() {
             <Product key={product.id}>
               <Box>{product.productName}</Box>
               <Box>{product.cost}</Box>
-              <Button onClick={() => handleSelect(product)}>Add</Button>
+              {user.role === 'buyer' && (
+                <Button onClick={() => handleSelect(product)}>Add</Button>
+              )}
             </Product>
           ))}
         </ProductList>

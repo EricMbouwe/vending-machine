@@ -4,7 +4,10 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Menu from './Menu';
 import { useEffect } from 'react';
-import { fecthProductsAsync } from '../features/product/productSlice';
+import {
+  fecthProductsAsync,
+  fecthProductsBySeller,
+} from '../features/product/productSlice';
 import Cart from '../features/cart/Cart';
 
 function Home() {
@@ -12,6 +15,7 @@ function Home() {
   const history = useHistory();
 
   const { data: user } = useSelector((state) => state.user);
+  const { sellerProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fecthProductsAsync());
@@ -22,13 +26,20 @@ function Home() {
     history.push('/login');
   };
 
+  console.log('SELLER PRODS', sellerProducts);
+
   return (
     <Box>
       <h1>Home page</h1>
-      {user.role === 'seller' && <Button>My Store</Button>}
+      <h2>{user.username.toUpperCase()}</h2>
+      {user.role === 'seller' && (
+        <Button onClick={() => dispatch(fecthProductsBySeller(user.id))}>
+          My Store
+        </Button>
+      )}
       <Button onClick={handleLogout}>Logout</Button>
       <Menu />
-      <Cart />
+      {user.role === 'buyer' && <Cart />}
     </Box>
   );
 }
