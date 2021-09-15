@@ -1,13 +1,13 @@
 require('dotenv').config();
 
 const router = require('express').Router();
-const { User } = require('../../db/models');
+const { User, Role } = require('../../db/models');
 const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res, next) => {
   try {
     // expects {username, password} in req.body
-    const { username, password } = req.body;
+    const { username, password, roleId } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
@@ -36,8 +36,11 @@ router.post('/register', async (req, res, next) => {
       });
     }
 
+    const role = await Role.getRoleName(roleId);
+
     res.json({
       ...user.dataValues,
+      role,
       token,
     });
   } catch (error) {

@@ -8,6 +8,7 @@ async function seed() {
   const thomas = await User.create({
     username: 'thomas',
     password: '123456',
+    roleId: 2,
   });
 
   const santiago = await User.create({
@@ -18,6 +19,7 @@ async function seed() {
   const chiumbo = await User.create({
     username: 'chiumbo',
     password: '123456',
+    roleId: 2,
   });
 
   const hualing = await User.create({

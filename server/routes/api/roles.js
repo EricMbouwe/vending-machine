@@ -4,10 +4,6 @@ const { Role } = require('../../db/models');
 // Get roles
 router.get('/', async (req, res, next) => {
   try {
-    // if (!req.user) {
-    //   return res.sendStatus(401);
-    // }
-
     const roles = await Role.getRoles();
 
     res.json(roles);
@@ -19,10 +15,6 @@ router.get('/', async (req, res, next) => {
 // Add a role
 router.post('/', async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-
     const { name } = req.body;
 
     if (!name) {
