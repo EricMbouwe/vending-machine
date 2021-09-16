@@ -23,14 +23,16 @@ function Account() {
     dispatch(resetDeposit());
   };
 
-  const formatChange = Object.entries(returnedMoney).map(([key, value]) => (
-    <div key={key}>
-      <span>
-        <b>{key} </b>:
-      </span>
-      <span> {value}</span>
-    </div>
-  ));
+  const formatChange = (denominationsHash) => {
+    return Object.entries(denominationsHash).map(([key, value]) => (
+      <div key={key}>
+        <span>
+          <b>{key} </b>:
+        </span>
+        <span> {value}</span>
+      </div>
+    ));
+  };
 
   return (
     <Box>
@@ -53,7 +55,7 @@ function Account() {
         </Amount>
         <Change>
           <h4>Change returned on reset</h4>
-          {formatChange}
+          {returnedMoney && formatChange(returnedMoney)}
         </Change>
         <Button onClick={handleReset}>Reset</Button>
       </DepositPad>

@@ -14,17 +14,20 @@ function Cart() {
     (state) => state.user,
   );
 
-  const formatChange = Object.entries(returnedMoney).map(([key, value]) => (
-    <div key={key}>
-      <span>
-        <b>{key} </b>:
-      </span>
-      <span> {value}</span>
-    </div>
-  ));
+  const formatChange = (denominationsHash) => {
+    return Object.entries(denominationsHash).map(([key, value]) => (
+      <div key={key}>
+        <span>
+          <b>{key} </b>:
+        </span>
+        <span> {value}</span>
+      </div>
+    ));
+  };
 
   const handleBuy = () => {
     const productId = cartList[0]?.id;
+    if (!productId || productId === undefined) return;
     dispatch(makePurchase({ productId, quantity }));
   };
 
@@ -73,15 +76,16 @@ function Cart() {
         <ReturnedItems>
           <Change>
             <h4>Change returned</h4>
-            {formatChange}
+            {returnedMoney && formatChange(returnedMoney)}
           </Change>
 
           <Box>
             <h4>Product list</h4>
             <ProductList>
-              {productsList.map((product) => (
-                <li key={product.id}>{product.productName}</li>
-              ))}
+              {productsList &&
+                productsList.map((product) => (
+                  <li key={product.id}>{product.productName}</li>
+                ))}
             </ProductList>
           </Box>
 
