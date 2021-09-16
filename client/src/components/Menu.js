@@ -23,15 +23,16 @@ function Menu() {
       <h2>Products Menu</h2>
       <Box>
         <ProductList>
-          {products.map((product) => (
-            <Product key={product.id}>
-              <Box>{product.productName}</Box>
-              <Box>{product.cost}</Box>
-              {user.role === 'buyer' && (
-                <Button onClick={() => handleSelect(product)}>Add</Button>
-              )}
-            </Product>
-          ))}
+          {products &&
+            products.map((product) => (
+              <Product key={product.id}>
+                <Box>{product.productName}</Box>
+                <Box>{product.cost}</Box>
+                {user.role === 'buyer' && (
+                  <Button onClick={() => handleSelect(product)}>Add</Button>
+                )}
+              </Product>
+            ))}
         </ProductList>
       </Box>
     </Box>

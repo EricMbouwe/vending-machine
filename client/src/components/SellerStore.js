@@ -38,18 +38,21 @@ function SellerStore() {
       <h2>My Store</h2>
       <Box>
         <ProductList>
-          {sellerProducts.map((product) => (
-            <Product key={product?.id}>
-              <Box>{product?.productName}</Box>
-              <Box>{product?.cost}</Box>
-              <Button onClick={() => console.log('Open edit form')}>
-                Edit
-              </Button>
-              <Button onClick={() => dispatch(deleteProductAsync(product.id))}>
-                Delete
-              </Button>
-            </Product>
-          ))}
+          {sellerProducts &&
+            sellerProducts.map((product) => (
+              <Product key={product?.id}>
+                <Box>{product?.productName}</Box>
+                <Box>{product?.cost}</Box>
+                <Button onClick={() => console.log('Open edit form')}>
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => dispatch(deleteProductAsync(product.id))}
+                >
+                  Delete
+                </Button>
+              </Product>
+            ))}
         </ProductList>
       </Box>
 
