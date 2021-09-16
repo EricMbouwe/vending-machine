@@ -70,10 +70,6 @@ router.post('/', authRole('seller'), async (req, res, next) => {
         .json({ error: 'productName must be at least 3 characters' });
     }
 
-    if (typeof cost != 'number') {
-      return res.status(400).json({ error: 'cost must be a valid number' });
-    }
-
     let product = await Product.create({
       productName,
       cost,
@@ -114,10 +110,6 @@ router.put(
         return res
           .status(400)
           .json({ error: 'productName must be at least 3 characters' });
-      }
-
-      if (typeof cost != 'number') {
-        return res.status(400).json({ error: 'cost must be a valid number' });
       }
 
       await product.update({

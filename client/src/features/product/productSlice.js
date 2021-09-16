@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchProducts, fetchSellerProducts } from './productAPI';
+import {
+  fetchProducts,
+  fetchSellerProducts,
+  deleteProduct,
+  createProduct,
+} from './productAPI';
 
 const initialState = {
   products: [],
@@ -17,8 +22,24 @@ export const fecthProductsAsync = createAsyncThunk(
 
 export const fecthProductsBySeller = createAsyncThunk(
   'product/fetchProductsBySeller',
-  async (sellerId) => { 
+  async (sellerId) => {
     const products = await fetchSellerProducts(sellerId);
+    return products;
+  },
+);
+
+export const createProductAsync = createAsyncThunk(
+  'product/createProduct',
+  async (body) => {
+    const products = await createProduct(body);
+    return products;
+  },
+);
+
+export const deleteProductAsync = createAsyncThunk(
+  'product/deleteProduct',
+  async (productId) => {
+    const products = await deleteProduct(productId);
     return products;
   },
 );
@@ -42,6 +63,9 @@ export const productSlice = createSlice({
       })
       .addCase(fecthProductsBySeller.fulfilled, (state, action) => {
         state.sellerProducts = action.payload;
+      })
+      .addCase(createProductAsync.fulfilled, (state, action) => {
+        state.sellerProducts.push(action.payload);
       });
   },
 });

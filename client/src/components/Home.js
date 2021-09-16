@@ -9,6 +9,7 @@ import {
   fecthProductsBySeller,
 } from '../features/product/productSlice';
 import Cart from '../features/cart/Cart';
+import SellerStore from './SellerStore';
 
 function Home() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function Home() {
       <Button onClick={handleLogout}>Logout</Button>
       <Menu />
       {user.role === 'buyer' && <Cart />}
+      <SellerStore />
     </Box>
   );
 }
