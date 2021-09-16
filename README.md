@@ -36,6 +36,39 @@ Create a .env file in the server directory and add your
 - PORT=3001
 - DATABASE_URL
 
+# Endpoints
+- AUTH
+```
+POST /auth/register 
+POST /auth/login
+POST /auth/logout
+GET  /auth/user 
+```
+- USERS
+```
+GET  /users
+GET  /api/users/username
+POST /api/users/deposit
+POST /api/users/reset
+POST /api/users/buy
+```
+- PRODUCTS
+```
+GET    /api/products
+GET    /api/products/seller/sellerId
+GET    /api/products/productId
+POST   /api/products
+PUT    /api/products/productId
+DELETE /api/products/productId
+```
+- ROLES
+```
+GET  /api/roles
+POST /api/roles
+```
+
+# Run tests
+
 # Built with
 - Express JS
 - ReactJs
