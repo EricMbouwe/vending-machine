@@ -10,8 +10,21 @@ function Cart() {
   const [quantity, setQuantity] = useState(1);
   const [amount, setAmount] = useState(0);
 
+  const { returnedMoney, totalSpent, productsList } = useSelector(
+    (state) => state.user,
+  );
+
+  const formatChange = Object.entries(returnedMoney).map(([key, value]) => (
+    <div key={key}>
+      <span>
+        <b>{key} </b>:
+      </span>
+      <span> {value}</span>
+    </div>
+  ));
+
   const handleBuy = () => {
-    const productId = cartList[0].id;
+    const productId = cartList[0]?.id;
     dispatch(makePurchase({ productId, quantity }));
   };
 
@@ -32,7 +45,7 @@ function Cart() {
   };
 
   return (
-    <Box>
+    <div>
       <h2>Cart</h2>
       <span>Number of items: {total}</span>
       {total > 0 && (
@@ -48,15 +61,34 @@ function Cart() {
             onChange={handleChangeQuantity}
           />
 
-          <Button onClick={handleBuy}>Buy</Button>
           <Button onClick={handleRemoveItem}>Remove</Button>
+          <Button onClick={handleBuy}>Buy</Button>
         </Product>
       )}
+
       <Box>
         <h3>Total</h3>
-        <span>{amount}</span>
+        <span>${amount}</span>
+
+        <ReturnedItems>
+          <Change>
+            <h4>Change returned</h4>
+            {formatChange}
+          </Change>
+
+          <ProductList>
+            {productsList.map((product) => (
+              <li key={product.id}>{product.productName}</li>
+            ))}
+          </ProductList>
+
+          <Box>
+            <h4>Total spent</h4>
+            <span>${totalSpent}</span>
+          </Box>
+        </ReturnedItems>
       </Box>
-    </Box>
+    </div>
   );
 }
 
@@ -70,6 +102,22 @@ const Button = styled.button`
 `;
 const QuantityInput = styled.input`
   width: 60px;
+`;
+
+const Change = styled.div`
+  margin: 30px 0;
+`;
+
+const ReturnedItems = styled.div`
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+`;
+
+const ProductList = styled.ul`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default Cart;

@@ -8,29 +8,29 @@ import {
 } from '../features/user/userSlice';
 
 function Account() {
-  const {
-    data: user,
-    deposit,
-    returnedMoney,
-    totalSpent,
-    productsList,
-  } = useSelector((state) => state.user);
+  const { deposit, returnedMoney } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
   const coins = [100, 50, 20, 10, 5];
-  const [amount, setAmount] = useState(0);
 
   const handleDeposit = (coin) => {
     dispatch(depositCoins(coin));
     dispatch(makeDeposit({ amount: coin }));
-    setAmount((prev) => prev + coin);
   };
 
   const handleReset = () => {
     dispatch(resetDeposit());
-    setAmount(0);
   };
+
+  const formatChange = Object.entries(returnedMoney).map(([key, value]) => (
+    <div key={key}>
+      <span>
+        <b>{key} </b>:
+      </span>
+      <span> {value}</span>
+    </div>
+  ));
 
   return (
     <Box>
@@ -49,8 +49,12 @@ function Account() {
         ))}
         <Amount>
           <span>Total: </span>
-          <span>{amount}</span>
+          <span>{deposit}</span>
         </Amount>
+        <Change>
+          <h4>Change returned</h4>
+          {formatChange}
+        </Change>
         <Button onClick={handleReset}>Reset</Button>
       </DepositPad>
     </Box>
@@ -67,5 +71,7 @@ const DepositPad = styled.div`
 const Amount = styled.div`
   margin: 30px 0;
 `;
-
+const Change = styled.div`
+  margin: 30px 0;
+`;
 export default Account;
