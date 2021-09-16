@@ -16,7 +16,6 @@ function Home() {
   const history = useHistory();
 
   const { data: user } = useSelector((state) => state.user);
-  const { sellerProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fecthProductsAsync());
@@ -26,8 +25,6 @@ function Home() {
     dispatch(logoutUser());
     history.push('/login');
   };
-
-  console.log('SELLER PRODS', sellerProducts);
 
   return (
     <Box>
@@ -39,9 +36,11 @@ function Home() {
         </Button>
       )}
       <Button onClick={handleLogout}>Logout</Button>
+      <hr />
       <Menu />
       {user.role === 'buyer' && <Cart />}
-      <SellerStore />
+      <hr />
+      {user.role === 'seller' && <SellerStore />}
     </Box>
   );
 }

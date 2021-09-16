@@ -15,7 +15,6 @@ function Menu() {
       return;
     }
     // Check if product already in cart
-
     dispatch(addToCart(product));
   };
 

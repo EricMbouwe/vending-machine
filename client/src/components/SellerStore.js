@@ -8,7 +8,6 @@ import {
 
 function SellerStore() {
   const { sellerProducts } = useSelector((state) => state.products);
-  //   const { data: user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [state, setState] = useState({
@@ -35,6 +34,7 @@ function SellerStore() {
 
   return (
     <Box>
+      <hr />
       <h2>My Store</h2>
       <Box>
         <ProductList>
@@ -56,6 +56,7 @@ function SellerStore() {
       <hr />
 
       <Box>
+        <h2>Create a new product</h2>
         <form onSubmit={handleCreateProduct}>
           <Grid>
             <FormControl>

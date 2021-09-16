@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { makePurchase } from '../user/userSlice';
+import { removeFromCart } from './cartSlice';
 
 function Cart() {
   const dispatch = useDispatch();
@@ -10,7 +11,6 @@ function Cart() {
   const [amount, setAmount] = useState(0);
 
   const handleBuy = () => {
-    console.log('Buy');
     const productId = cartList[0].id;
     dispatch(makePurchase({ productId, quantity }));
   };
@@ -25,9 +25,15 @@ function Cart() {
     setAmount(totalTopay);
   };
 
+  const handleRemoveItem = () => {
+    dispatch(removeFromCart(cartList[0].id));
+    setAmount(0);
+    setQuantity(0);
+  };
+
   return (
     <Box>
-      <h1>Cart</h1>
+      <h2>Cart</h2>
       <span>Number of items: {total}</span>
       {total > 0 && (
         <Product>
@@ -36,12 +42,14 @@ function Cart() {
 
           <QuantityInput
             value={quantity}
+            placeholder="quantity"
             type="number"
             min="0"
             onChange={handleChangeQuantity}
           />
 
           <Button onClick={handleBuy}>Buy</Button>
+          <Button onClick={handleRemoveItem}>Remove</Button>
         </Product>
       )}
       <Box>
