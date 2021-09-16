@@ -51,15 +51,9 @@ router.post('/deposit', authRole('buyer'), async (req, res, next) => {
     const user = req.user;
 
     const { amount } = req.body;
+    const newAmount = user.deposit + amount;
 
-    if (!amount) return res.send('Amount is required');
-    if (user.deposit > 0) {
-      return res.send(
-        'Your account is already filled, make a purchase or reset your deposit to continue',
-      );
-    }
-
-    user.update({ deposit: amount });
+    user.update({ deposit: newAmount });
 
     res.json(user);
   } catch (error) {

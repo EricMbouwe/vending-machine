@@ -39,9 +39,14 @@ function Menu() {
 }
 
 const Box = styled.div``;
-const ProductList = styled.ul``;
+const ProductList = styled.ul`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Product = styled.li`
   list-style-type: none;
+  margin: 10px;
 `;
 const Button = styled.button`
   cursor: pointer;

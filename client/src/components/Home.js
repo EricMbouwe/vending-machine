@@ -10,12 +10,18 @@ import {
 } from '../features/product/productSlice';
 import Cart from '../features/cart/Cart';
 import SellerStore from './SellerStore';
+import Account from './Account';
 
 function Home() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { data: user } = useSelector((state) => state.user);
+  const {
+    data: user,
+    returnedMoney,
+    totalSpent,
+    productsList,
+  } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fecthProductsAsync());
@@ -25,6 +31,10 @@ function Home() {
     dispatch(logoutUser());
     history.push('/login');
   };
+
+  console.log('USER DATA', returnedMoney);
+  console.log('USER DATA', totalSpent);
+  console.log('USER DATA', productsList);
 
   return (
     <Box>
@@ -37,7 +47,10 @@ function Home() {
       )}
       <Button onClick={handleLogout}>Logout</Button>
       <hr />
+      {user.role === 'buyer' && <Account />}
+      <hr />
       <Menu />
+      <hr />
       {user.role === 'buyer' && <Cart />}
       <hr />
       {user.role === 'seller' && <SellerStore />}

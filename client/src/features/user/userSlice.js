@@ -11,6 +11,7 @@ import {
 
 const initialState = {
   data: {},
+  deposit: 0,
   returnedMoney: {},
   totalSpent: 0,
   productsList: [],
@@ -63,7 +64,11 @@ export const resetDeposit = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    depositCoins: (state, action) => {
+      state.deposit += action.payload;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
@@ -73,6 +78,7 @@ export const userSlice = createSlice({
       .addCase(fecthUserAsync.fulfilled, (state, action) => {
         state.status = 'success';
         state.data = action.payload;
+        state.deposit = action.payload.deposit;
       })
       .addCase(fecthUserAsync.rejected, (state) => {
         state.status = 'failed';
@@ -93,9 +99,10 @@ export const userSlice = createSlice({
         state.returnedMoney = action.payload.returnedMoney;
         state.totalSpent = action.payload.totalSpent;
         state.productsList = action.payload.productsList;
+        state.deposit = action.payload.deposit;
       })
       .addCase(resetDeposit.fulfilled, (state, action) => {
-        state.data.deposit = 0;
+        state.deposit = action.payload.deposit;
         state.returnedMoney = action.payload.returnedMoney;
       })
       .addCase(makeDeposit.fulfilled, (state, action) => {
@@ -104,7 +111,7 @@ export const userSlice = createSlice({
   },
 });
 
-// export const { someActions } = userSlice.actions;
+export const { depositCoins } = userSlice.actions;
 
 export const selectUser = (state) => state.user;
 
