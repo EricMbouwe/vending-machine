@@ -20,7 +20,7 @@ function Menu() {
 
   return (
     <Box>
-      <h2>Menu</h2>
+      <h2>Products Menu</h2>
       <Box>
         <ProductList>
           {products.map((product) => (

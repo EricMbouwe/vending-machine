@@ -52,7 +52,7 @@ function Account() {
           <span>{deposit}</span>
         </Amount>
         <Change>
-          <h4>Change returned</h4>
+          <h4>Change returned on reset</h4>
           {formatChange}
         </Change>
         <Button onClick={handleReset}>Reset</Button>

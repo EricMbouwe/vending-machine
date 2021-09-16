@@ -76,11 +76,14 @@ function Cart() {
             {formatChange}
           </Change>
 
-          <ProductList>
-            {productsList.map((product) => (
-              <li key={product.id}>{product.productName}</li>
-            ))}
-          </ProductList>
+          <Box>
+            <h4>Product list</h4>
+            <ProductList>
+              {productsList.map((product) => (
+                <li key={product.id}>{product.productName}</li>
+              ))}
+            </ProductList>
+          </Box>
 
           <Box>
             <h4>Total spent</h4>
@@ -104,14 +107,13 @@ const QuantityInput = styled.input`
   width: 60px;
 `;
 
-const Change = styled.div`
-  margin: 30px 0;
-`;
+const Change = styled.div``;
 
 const ReturnedItems = styled.div`
   margin: 30px 0;
   display: flex;
   justify-content: center;
+  gap: 25px;
 `;
 
 const ProductList = styled.ul`
