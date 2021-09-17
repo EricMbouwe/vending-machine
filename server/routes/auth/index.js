@@ -39,7 +39,7 @@ router.post('/register', async (req, res, next) => {
     const role = await Role.getRoleName(roleId);
     user.update({ role: role });
 
-    res.json(user);
+    res.json({ ...user.dataValues, token });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.status(401).json({ error: 'User already exists' });
@@ -84,7 +84,7 @@ router.post('/login', async (req, res, next) => {
         });
       }
 
-      res.json(user);
+      res.json({ ...user.dataValues, token });
     }
   } catch (error) {
     next(error);

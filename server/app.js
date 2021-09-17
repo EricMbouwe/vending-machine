@@ -66,6 +66,7 @@ app.use(function (req, res, next) {
 });
 
 // require api routes here after I create them
+// Register my routers to the app
 app.use('/auth', require('./routes/auth'));
 app.use('/api', authUser, require('./routes/api'));
 
