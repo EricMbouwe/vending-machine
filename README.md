@@ -80,7 +80,7 @@ POST /api/roles
 
 # Run tests
 
-// "test": "NODE_ENV=test ./node_modules/.bin/jest",
+`npm run test`
 
 # Built with
 

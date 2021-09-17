@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
-    "test": "jest --watchAll --detectOpenHandles",
+    "test": "jest --watch --detectOpenHandles --runInBand --verbose",
     "seed": "node db/seed.js"
   },
   "dependencies": {

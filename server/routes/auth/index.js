@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res, next) => {
   try {
-    // expects {username, password} in req.body
+    // expects {username, password, roleId} in req.body
     const { username, password, roleId } = req.body;
 
     if (!username || !password) {
@@ -42,9 +42,9 @@ router.post('/register', async (req, res, next) => {
     res.json({ ...user.dataValues, token });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(401).json({ error: 'User already exists' });
+      return next({ status: 422, message: 'User already exists' });
     } else if (error.name === 'SequelizeValidationError') {
-      return res.status(401).json({ error: 'Validation error' });
+      return res.status(422).json({ error: 'Validation error' });
     } else next(error);
   }
 });
