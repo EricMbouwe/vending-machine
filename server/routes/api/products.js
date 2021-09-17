@@ -42,7 +42,10 @@ router.get('/seller/:sellerId', async (req, res, next) => {
     });
 
     if (!seller) {
-      return res.status(404).send('The seller with the given id was not found');
+      return next({
+        status: 404,
+        message: 'The seller with the given id was not found',
+      });
     }
 
     const products = await Product.findProductsBySeller(sellerId);
@@ -158,14 +161,18 @@ async function setProduct(req, res, next) {
 
   // if not existing return 404
   if (!req.product) {
-    return res.status(404).send('The product with the given id was not found');
+    return next({
+      status: 404,
+      message: 'The product with the given id was not found',
+    });
   }
+
   next();
 }
 
 function authUpdateProduct(req, res, next) {
   if (!canUpdateProduct(req.user, req.product)) {
-    res.status(401);
+    res.status(403);
     return res.send('Not Allowed');
   }
 
@@ -174,7 +181,7 @@ function authUpdateProduct(req, res, next) {
 
 function authDeleteProduct(req, res, next) {
   if (!canDeleteProduct(req.user, req.product)) {
-    res.status(401);
+    res.status(403);
     return res.send('Not Allowed');
   }
 
