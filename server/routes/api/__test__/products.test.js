@@ -122,4 +122,21 @@ describe('API/PRODUCTS', () => {
       ]),
     );
   });
+
+  test("GET seller's products by sellerId /api/products/seller/sellerId -> 404 if not found", async () => {
+    const response = await seller
+      .get('/api/products/seller/9999')
+      .set('Cookie', cookie)
+      .expect('Content-type', /json/)
+      .expect(404);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        error: expect.objectContaining({
+          status: 404,
+          message: expect.any(String),
+        }),
+      }),
+    );
+  });
 });
