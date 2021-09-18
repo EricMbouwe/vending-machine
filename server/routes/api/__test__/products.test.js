@@ -4,7 +4,6 @@ const request = require('supertest');
 let cookie;
 const seller = request.agent(app);
 const buyer = request.agent(app);
-let eric3;
 
 beforeAll((done) => {
   seller
@@ -22,34 +21,26 @@ beforeAll((done) => {
       cookie = response.headers['set-cookie'];
       done();
     });
-
-  // request(app)
-  //   .post('/auth/register')
-  //   .send({ username: 'eric9', password: 'azerty', roleId: 1 })
-  //   .end((err, response) => {
-  //     eric = response.body;
-  //     done();
-  //   });
 });
 
 describe('API/PRODUCTS', () => {
-  test('It should require authentication from anonymous request', async () => {
+  test('It should require authentication', async () => {
     const response = await request(app).get('/api/products');
     expect(response.statusCode).toBe(401);
   });
 
   // Token not being sent - should respond with a 401
-  test('It should require authentication from a seller user', async () => {
+  test('It should require authentication', async () => {
     const response = await seller.get('/api/products');
     expect(response.statusCode).toBe(401);
   });
 
-  test('It should require authentication from a buyer user', async () => {
+  test('It should require authentication', async () => {
     const response = await seller.get('/api/products');
     expect(response.statusCode).toBe(401);
   });
 
-  test('It responds with JSON from a seller user request', () => {
+  test('It responds with JSON', () => {
     return seller
       .get('/api/products')
       .set('Cookie', cookie)
@@ -59,7 +50,7 @@ describe('API/PRODUCTS', () => {
       });
   });
 
-  test('It responds with JSON from a seller buyer request', () => {
+  test('It responds with JSON', () => {
     return buyer
       .get('/api/products')
       .set('Cookie', cookie)
@@ -69,7 +60,7 @@ describe('API/PRODUCTS', () => {
       });
   });
 
-  test('Seller GET /api/products -> array of products', async () => {
+  test('GET /api/products -> Array of products', async () => {
     const response = await seller
       .get('/api/products')
       .set('Cookie', cookie)
@@ -87,7 +78,7 @@ describe('API/PRODUCTS', () => {
     );
   });
 
-  test('Buyer GET /api/products -> array of products', async () => {
+  test('GET /api/products -> Array of products', async () => {
     const response = await buyer
       .get('/api/products')
       .set('Cookie', cookie)
@@ -105,7 +96,7 @@ describe('API/PRODUCTS', () => {
     );
   });
 
-  test("GET seller's products by sellerId /api/products/seller/sellerId -> array of products", async () => {
+  test('GET /api/products/seller/sellerId -> Array of products', async () => {
     const response = await seller
       .get('/api/products/seller/1')
       .set('Cookie', cookie)
@@ -123,7 +114,7 @@ describe('API/PRODUCTS', () => {
     );
   });
 
-  test("GET seller's products by sellerId /api/products/seller/sellerId -> 404 if not found", async () => {
+  test('GET /api/products/seller/sellerId -> 404 if seller user not found', async () => {
     const response = await seller
       .get('/api/products/seller/9999')
       .set('Cookie', cookie)
@@ -138,5 +129,95 @@ describe('API/PRODUCTS', () => {
         }),
       }),
     );
+  });
+
+  test('POST /api/products/ -> Created product', async () => {
+    const response = await seller
+      .post('/api/products')
+      .set('Cookie', cookie)
+      .send({ productName: 'coca-cola', cost: 345 })
+      .expect('Content-type', /json/)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      productName: 'coca-cola',
+      cost: 345,
+      sellerId: expect.any(Number),
+    });
+  });
+
+  test('POST /api/products/ -> Not allowed if not seller', async () => {
+    const response = await seller
+      .post('/api/products')
+      .set('Cookie', cookie)
+      .send({ productName: 'coca-cola', cost: 345 })
+      .expect('Content-type', /json/)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      productName: 'coca-cola',
+      cost: 345,
+      sellerId: expect.any(Number),
+    });
+  });
+
+  test('PUT /api/products/productId -> Updated product', async () => {
+    const response = await seller
+      .put('/api/products/1')
+      .set('Cookie', cookie)
+      .send({ productName: 'coca-cola', cost: 345 })
+      .expect('Content-type', /json/)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      productName: 'coca-cola',
+      cost: 345,
+      sellerId: expect.any(Number),
+    });
+  });
+
+  test('PUT /api/products/productId -> Not allowed if not seller', async () => {
+    const response = await seller
+      .put('/api/products/1')
+      .set('Cookie', cookie)
+      .send({ productName: 'coca-cola', cost: 345 })
+      .expect('Content-type', /json/)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      productName: 'coca-cola',
+      cost: 345,
+      sellerId: expect.any(Number),
+    });
+  });
+
+  test('DELETE /api/products/productId -> Deleted product', async () => {
+    const response = await seller
+      .delete('/api/products/1')
+      .set('Cookie', cookie)
+      .send({ productName: 'coca-cola', cost: 345 })
+      .expect('Content-type', /json/)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      productName: 'coca-cola',
+      cost: 345,
+      sellerId: expect.any(Number),
+    });
+  });
+
+  test('DELETE /api/products/productId -> Not Allowed if not seller', async () => {
+    const response = await seller
+      .delete('/api/products/1')
+      .set('Cookie', cookie)
+      .send({ productName: 'coca-cola', cost: 345 })
+      .expect('Content-type', /json/)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      productName: 'coca-cola',
+      cost: 345,
+      sellerId: expect.any(Number),
+    });
   });
 });
