@@ -25,23 +25,36 @@ beforeAll((done) => {
 
 describe('API/PRODUCTS', () => {
   test('It should require authentication if not authenticated', async () => {
-    const response = await request(app).get('/api/products');
+    const response = await request(app)
+      .get('/api/products')
+      .set('Accept', 'application/json');
+
     expect(response.statusCode).toBe(401);
+    expect(response.type).not.toBe('application/json');
   });
 
   test('It should require authentication if not authenticated', async () => {
-    const response = await seller.get('/api/products');
+    const response = await seller
+      .get('/api/products')
+      .set('Accept', 'application/json');
+
     expect(response.statusCode).toBe(401);
+    expect(response.type).not.toBe('application/json');
   });
 
   test('It should require authentication if not authenticated', async () => {
-    const response = await seller.get('/api/products');
+    const response = await seller
+      .get('/api/products')
+      .set('Accept', 'application/json');
+
     expect(response.statusCode).toBe(401);
+    expect(response.type).not.toBe('application/json');
   });
 
   test('It responds with JSON if authenticated', () => {
     return seller
       .get('/api/products')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -52,6 +65,7 @@ describe('API/PRODUCTS', () => {
   test('It responds with JSON if authenticated', () => {
     return buyer
       .get('/api/products')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -62,6 +76,7 @@ describe('API/PRODUCTS', () => {
   test('GET /api/products -> Array of products', async () => {
     const response = await seller
       .get('/api/products')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .expect('Content-type', /json/)
       .expect(200);
@@ -80,6 +95,7 @@ describe('API/PRODUCTS', () => {
   test('GET /api/products -> Array of products', async () => {
     const response = await buyer
       .get('/api/products')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .expect('Content-type', /json/)
       .expect(200);
@@ -98,6 +114,7 @@ describe('API/PRODUCTS', () => {
   test('GET /api/products/seller/sellerId -> Array of products', async () => {
     const response = await seller
       .get('/api/products/seller/1')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .expect('Content-type', /json/)
       .expect(200);
@@ -116,6 +133,7 @@ describe('API/PRODUCTS', () => {
   test('GET /api/products/seller/sellerId -> 404 if seller user not found', async () => {
     const response = await seller
       .get('/api/products/seller/9999')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .expect('Content-type', /json/)
       .expect(404);
@@ -133,6 +151,7 @@ describe('API/PRODUCTS', () => {
   test('POST /api/products/ -> Created product', async () => {
     const response = await seller
       .post('/api/products')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .send({ productName: 'coca-cola', cost: 345 })
       .expect('Content-type', /json/)
@@ -148,6 +167,7 @@ describe('API/PRODUCTS', () => {
   test('POST /api/products/ -> Not allowed if not seller', async () => {
     const response = await seller
       .post('/api/products')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .send({ productName: 'coca-cola', cost: 345 })
       .expect('Content-type', /json/)
@@ -163,6 +183,7 @@ describe('API/PRODUCTS', () => {
   test('PUT /api/products/productId -> Updated product', async () => {
     const response = await seller
       .put('/api/products/1')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .send({ productName: 'coca-cola', cost: 345 })
       .expect('Content-type', /json/)
@@ -178,6 +199,7 @@ describe('API/PRODUCTS', () => {
   test('PUT /api/products/productId -> Not allowed if not seller', async () => {
     const response = await seller
       .put('/api/products/1')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .send({ productName: 'coca-cola', cost: 345 })
       .expect('Content-type', /json/)
@@ -193,6 +215,7 @@ describe('API/PRODUCTS', () => {
   test('DELETE /api/products/productId -> Deleted product', async () => {
     const response = await seller
       .delete('/api/products/1')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .send({ productName: 'coca-cola', cost: 345 })
       .expect('Content-type', /json/)
@@ -208,6 +231,7 @@ describe('API/PRODUCTS', () => {
   test('DELETE /api/products/productId -> Not Allowed if not seller', async () => {
     const response = await seller
       .delete('/api/products/1')
+      .set('Accept', 'application/json')
       .set('Cookie', cookie)
       .send({ productName: 'coca-cola', cost: 345 })
       .expect('Content-type', /json/)
