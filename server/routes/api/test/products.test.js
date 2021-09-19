@@ -24,23 +24,22 @@ beforeAll((done) => {
 });
 
 describe('API/PRODUCTS', () => {
-  test('It should require authentication', async () => {
+  test('It should require authentication if not authenticated', async () => {
     const response = await request(app).get('/api/products');
     expect(response.statusCode).toBe(401);
   });
 
-  // Token not being sent - should respond with a 401
-  test('It should require authentication', async () => {
+  test('It should require authentication if not authenticated', async () => {
     const response = await seller.get('/api/products');
     expect(response.statusCode).toBe(401);
   });
 
-  test('It should require authentication', async () => {
+  test('It should require authentication if not authenticated', async () => {
     const response = await seller.get('/api/products');
     expect(response.statusCode).toBe(401);
   });
 
-  test('It responds with JSON', () => {
+  test('It responds with JSON if authenticated', () => {
     return seller
       .get('/api/products')
       .set('Cookie', cookie)
@@ -50,7 +49,7 @@ describe('API/PRODUCTS', () => {
       });
   });
 
-  test('It responds with JSON', () => {
+  test('It responds with JSON if authenticated', () => {
     return buyer
       .get('/api/products')
       .set('Cookie', cookie)
