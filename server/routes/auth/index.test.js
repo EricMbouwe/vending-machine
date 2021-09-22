@@ -35,8 +35,8 @@ describe('AUTH/USER', () => {
 
   test('POST /auth/login -> It responds with 200, user logged in', async () => {
     const data = {
-      username: 'edou',
-      password: 'azerty',
+      username: 'thomas',
+      password: '123456',
     };
 
     await request(app)
