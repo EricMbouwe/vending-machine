@@ -10,7 +10,6 @@ require('dotenv').config();
 const { app, sessionStore } = require('../app');
 const http = require('http');
 const db = require('../db');
-// const onlineUsers = require('../onlineUsers');
 
 /**
  * Get port from environment and store in Express.
@@ -93,6 +92,4 @@ function onListening() {
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 
   console.log('Listening on ' + bind);
-  // console.log(process.env.SESSION_SECRET);
-  // console.log(process.env.DATABASE_URL);
 }

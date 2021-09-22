@@ -17,7 +17,7 @@ router.get('/:username', async (req, res, next) => {
     });
 
     if (!user) {
-      return res.send('User not found');
+      return next({ status: 404, message: 'This user does not exist!' });
     }
 
     res.json(user);

@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res, next) => {
   try {
-    // expects {username, password} in req.body
     const { username, password, roleId } = req.body;
 
     if (!username || !password) {
@@ -39,12 +38,12 @@ router.post('/register', async (req, res, next) => {
     const role = await Role.getRoleName(roleId);
     user.update({ role: role });
 
-    res.json(user);
+    res.status(201).json({ ...user.dataValues, token });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(401).json({ error: 'User already exists' });
+      return next({ status: 422, message: 'User already exists' });
     } else if (error.name === 'SequelizeValidationError') {
-      return res.status(401).json({ error: 'Validation error' });
+      return res.status(422).json({ error: 'Validation error' });
     } else next(error);
   }
 });
@@ -84,7 +83,7 @@ router.post('/login', async (req, res, next) => {
         });
       }
 
-      res.json(user);
+      res.json({ ...user.dataValues, token });
     }
   } catch (error) {
     next(error);
@@ -101,7 +100,7 @@ router.get('/user', (req, res, next) => {
   if (req.user) {
     return res.json(req.user);
   } else {
-    return res.json({ message: 'No Logged User' });
+    return res.status(404).json({ message: 'No Logged User' });
   }
 });
 
