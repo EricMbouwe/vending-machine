@@ -33,12 +33,6 @@ router.get('/', async (req, res, next) => {
 
     if (users.length < 1) return res.send('No user found');
 
-    for (user of users) {
-      const roleId = user.roleId;
-      const role = await Role.getRoleName(roleId);
-      user.update({ role: role });
-    }
-
     res.json(users);
   } catch (error) {
     next(error);
