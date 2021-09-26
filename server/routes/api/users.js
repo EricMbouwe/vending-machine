@@ -63,6 +63,10 @@ router.post('/reset', authRole('buyer'), async (req, res, next) => {
   try {
     const user = req.user;
 
+    if (user.deposit === 0) {
+      return res.send(user);
+    }
+
     const returnedMoney = user.dispenseCoins(
       user.deposit,
       [100, 50, 20, 10, 5],
@@ -70,7 +74,7 @@ router.post('/reset', authRole('buyer'), async (req, res, next) => {
 
     user.update({ deposit: 0 });
 
-    res.status(205).json({
+    res.json({
       ...user.dataValues,
       returnedMoney,
     });
