@@ -82,7 +82,7 @@ router.post('/', authRole('seller'), async (req, res, next) => {
     const { count, rows } = await Product.calculateAvailableAmount(product);
 
     product.update({ amountAvailable: count });
-    Product.updateAmountAvailableForAll(rows, count);
+    Product.updateAmountAvailableForAll(rows, count); // to restore after tests
 
     res.status(201).json({ ...product.dataValues, count, rows });
   } catch (error) {

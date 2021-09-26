@@ -17,7 +17,7 @@ router.get('/:username', async (req, res, next) => {
     });
 
     if (!user) {
-      return next({ status: 404, message: 'This user does not exist!' });
+      return next({ status: 404, message: 'The with the given id does not exist!' });
     }
 
     res.json(user);
@@ -67,7 +67,7 @@ router.post('/reset', authRole('buyer'), async (req, res, next) => {
 
     user.update({ deposit: 0 });
 
-    res.json({
+    res.status(205).json({
       ...user.dataValues,
       returnedMoney,
     });
@@ -93,7 +93,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
       },
     });
 
-    if (!product) return res.send('Sorry this product is not available');
+    if (!product) return res.status(404).send('Sorry the product with the given id was not found');
 
     const { count, rows } = await Product.findAndCountAll({
       where: {
@@ -103,7 +103,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
     });
 
     if (quantity > count)
-      return res.send(
+      return res.status(400).send(
         `Sorry there is only ${count} ${product.productName} available`,
       );
 
@@ -113,7 +113,9 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
     reminder = user.deposit - totalSpent;
 
     if (reminder < 0)
-      return res.send("Sorry you don't have enougth money to buy this product");
+      return res.status(400).send("Sorry you don't have enougth money to buy this/these product(s)");
+
+    const remainQuantity = count - quantity
 
     for (let i = 0; i < quantity; i++) {
       await Product.destroy({
@@ -121,13 +123,13 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
           id: rows[i].id,
         },
       });
-      rows[i].update({ amountAvailable: count - quantity });
+      rows[i].update({ amountAvailable: remainQuantity });
       productsList.push(rows[i]);
     }
 
     // Update remaining product available quantity
-    for (let i = 0; i < count; i++) {
-      rows[i].update({ amountAvailable: count - quantity });
+    for (let i = 0; i < remainQuantity; i++) {
+      rows[i].update({ amountAvailable: remainQuantity });
     }
 
     const returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);
