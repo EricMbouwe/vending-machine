@@ -27,13 +27,13 @@ router.post('/register', async (req, res, next) => {
     );
 
     if (!req.cookies || !req.cookies.token) {
-      res.setHeader('Set-Cookie', `token=${token};HttpOnly;`);
-      // res.cookie('token', token, {
-      //   sameSite: true,
-      //   secure: true,
-      //   maxAge: 86400000,
-      //   httpOnly: true,
-      // });
+      // res.setHeader('Set-Cookie', `token=${token};HttpOnly;`);
+      res.cookie('token', token, {
+        sameSite: true,
+        secure: true,
+        maxAge: 86400000,
+        httpOnly: true,
+      });
     }
 
     const role = await Role.getRoleName(roleId);
@@ -76,13 +76,13 @@ router.post('/login', async (req, res, next) => {
       );
 
       if (!req.cookies || !req.cookies.token) {
-        res.setHeader('Set-Cookie', `token=${token};HttpOnly;`);
-        // res.cookie('token', token, {
-        //   sameSite: true,
-        //   secure: true,
-        //   maxAge: 86400000,
-        //   httpOnly: true,
-        // });
+        // res.setHeader('Set-Cookie', `token=${token};HttpOnly;`);
+        res.cookie('token', token, {
+          sameSite: true,
+          secure: true,
+          maxAge: 86400000,
+          httpOnly: true,
+        });
       }
 
       res.json({ ...user.dataValues, token });

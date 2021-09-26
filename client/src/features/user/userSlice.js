@@ -96,17 +96,17 @@ export const userSlice = createSlice({
         state.data = {};
       })
       .addCase(makePurchase.fulfilled, (state, action) => {
-        state.returnedMoney = action.payload.returnedMoney;
-        state.totalSpent = action.payload.totalSpent;
-        state.productsList = action.payload.productsList;
-        state.deposit = action.payload.deposit;
+        state.returnedMoney = action.payload?.returnedMoney;
+        state.totalSpent = action.payload?.totalSpent;
+        state.productsList = action.payload?.productsList;
+        state.deposit = action.payload?.deposit;
       })
       .addCase(resetDeposit.fulfilled, (state, action) => {
-        state.deposit = action.payload.deposit;
-        state.returnedMoney = action.payload.returnedMoney;
+        state.deposit = action.payload?.deposit;
+        state.returnedMoney = action.payload?.returnedMoney;
       })
       .addCase(makeDeposit.fulfilled, (state, action) => {
-        state.data.deposit = action.payload.deposit;
+        state.data.deposit = action.payload?.deposit;
       });
   },
 });

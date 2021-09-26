@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { User, Product, Role } = require('../../db/models');
 const { Op } = require('sequelize');
-const { authRole } = require('../../authHelper');
+const { authRole, authUser } = require('../../authHelper');
 
 // find user by username
 router.get('/:username', async (req, res, next) => {
@@ -17,7 +17,10 @@ router.get('/:username', async (req, res, next) => {
     });
 
     if (!user) {
-      return next({ status: 404, message: 'The with the given id does not exist!' });
+      return next({
+        status: 404,
+        message: 'The user with the given id does not exist!',
+      });
     }
 
     res.json(user);
@@ -93,7 +96,10 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
       },
     });
 
-    if (!product) return res.status(404).send('Sorry the product with the given id was not found');
+    if (!product)
+      return res
+        .status(404)
+        .send('Sorry the product with the given id was not found');
 
     const { count, rows } = await Product.findAndCountAll({
       where: {
@@ -103,9 +109,9 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
     });
 
     if (quantity > count)
-      return res.status(400).send(
-        `Sorry there is only ${count} ${product.productName} available`,
-      );
+      return res
+        .status(400)
+        .send(`Sorry there is only ${count} ${product.productName} available`);
 
     const { cost } = product;
 
@@ -113,9 +119,13 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
     reminder = user.deposit - totalSpent;
 
     if (reminder < 0)
-      return res.status(400).send("Sorry you don't have enougth money to buy this/these product(s)");
+      return res
+        .status(400)
+        .send(
+          "Sorry you don't have enougth money to buy this/these product(s)",
+        );
 
-    const remainQuantity = count - quantity
+    const remainQuantity = count - quantity;
 
     for (let i = 0; i < quantity; i++) {
       await Product.destroy({
