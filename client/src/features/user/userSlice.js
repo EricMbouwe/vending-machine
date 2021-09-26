@@ -78,7 +78,7 @@ export const userSlice = createSlice({
       .addCase(fecthUserAsync.fulfilled, (state, action) => {
         state.status = 'success';
         state.data = action.payload;
-        state.deposit = action.payload.deposit;
+        state.deposit = action.payload?.deposit;
       })
       .addCase(fecthUserAsync.rejected, (state) => {
         state.status = 'failed';
