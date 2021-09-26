@@ -1,16 +1,13 @@
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
 import { makePurchase } from '../user/userSlice';
-import { removeFromCart } from './cartSlice';
+import { removeFromCart, deleteFromCart } from './cartSlice';
 
 function Cart() {
   const dispatch = useDispatch();
-  const { cartList, total } = useSelector((state) => state.cart);
-  const [quantity, setQuantity] = useState(1);
-  const [amount, setAmount] = useState(0);
+  const { cartList, total, amount } = useSelector((state) => state.cart);
 
-  const { returnedMoney, totalSpent, productsList } = useSelector(
+  const { returnedMoney, totalSpent, productsPurchasedList } = useSelector(
     (state) => state.user,
   );
 
@@ -26,48 +23,52 @@ function Cart() {
   };
 
   const handleBuy = () => {
-    const productId = cartList[0]?.id;
-    if (!productId || productId === undefined) return;
-    dispatch(makePurchase({ productId, quantity }));
+    const productId = cartList[0].id;
+    dispatch(makePurchase({ productId, quantity: total }));
   };
 
-  const handleChangeQuantity = (e) => {
-    const value = parseInt(e.target.value);
-    let totalTopay = 0;
+  // const handleChangeQuantity = (e) => {
+  //   const value = parseInt(e.target.value);
+  //   let totalTopay = 0;
 
-    setQuantity(value);
+  //   setQuantity(value);
 
-    totalTopay = value * cartList[0]?.cost;
-    setAmount(totalTopay);
-  };
+  //   totalTopay = value * cartList[0]?.cost;
+  //   setAmount(totalTopay);
+  // };
 
   const handleRemoveItem = () => {
-    dispatch(removeFromCart(cartList[0].id));
-    setAmount(0);
-    setQuantity(0);
+    dispatch(removeFromCart());
   };
 
   return (
     <div>
-      <h2>Cart</h2>
-      <span>Number of items: {total}</span>
+      <h2>
+        Cart <span>[{total}]</span>
+      </h2>
       {total > 0 && (
         <Product>
           <span>{cartList[0].productName} </span>
           <span>{cartList[0].cost} </span>
 
-          <QuantityInput
+          {/* <QuantityInput
             value={quantity}
             placeholder="quantity"
             type="number"
             min="0"
             onChange={handleChangeQuantity}
-          />
+          /> */}
 
-          <Button onClick={handleRemoveItem}>Remove</Button>
-          <Button onClick={handleBuy}>Buy</Button>
+          <Button onClick={handleRemoveItem}>Remove One</Button>
+          <Button onClick={() => dispatch(deleteFromCart())}>Delete</Button>
         </Product>
       )}
+
+      <Box>
+        <Button onClick={handleBuy} disabled={total < 1}>
+          Buy
+        </Button>
+      </Box>
 
       <Box>
         <h3>Total</h3>
@@ -82,8 +83,8 @@ function Cart() {
           <Box>
             <h4>Product list</h4>
             <ProductList>
-              {productsList &&
-                productsList.map((product) => (
+              {productsPurchasedList &&
+                productsPurchasedList.map((product) => (
                   <li key={product.id}>{product.productName}</li>
                 ))}
             </ProductList>
@@ -107,9 +108,10 @@ const Button = styled.button`
   cursor: pointer;
   margin-left: 5px;
 `;
-const QuantityInput = styled.input`
-  width: 60px;
-`;
+
+// const QuantityInput = styled.input`
+//   width: 60px;
+// `;
 
 const Change = styled.div``;
 
@@ -122,6 +124,7 @@ const ReturnedItems = styled.div`
 
 const ProductList = styled.ul`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;

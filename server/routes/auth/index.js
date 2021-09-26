@@ -27,7 +27,6 @@ router.post('/register', async (req, res, next) => {
     );
 
     if (!req.cookies || !req.cookies.token) {
-      // res.setHeader('Set-Cookie', `token=${token};HttpOnly;`);
       res.cookie('token', token, {
         sameSite: true,
         secure: true,
@@ -51,7 +50,6 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    // expects username and password in req.body
     const { username, password } = req.body;
     if (!username || !password)
       return res.status(400).json({ error: 'Username and password required' });
@@ -76,7 +74,6 @@ router.post('/login', async (req, res, next) => {
       );
 
       if (!req.cookies || !req.cookies.token) {
-        // res.setHeader('Set-Cookie', `token=${token};HttpOnly;`);
         res.cookie('token', token, {
           sameSite: true,
           secure: true,

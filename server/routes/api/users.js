@@ -100,11 +100,34 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
       },
     });
 
-    if (!product)
-      return res
-        .status(404)
-        .send('Sorry the product with the given id was not found');
+    if (!product) {
+      console.log({
+        error: 'Sorry the product with the given id is not available',
+      });
 
+      return res.status(404).send({
+        error: 'Sorry the product with the given id is not available',
+      });
+    }
+
+    const { cost } = product;
+
+    totalSpent = cost * quantity;
+    reminder = user.deposit - totalSpent;
+
+    if (reminder < 0) {
+      console.log({
+        error:
+          "Sorry you don't have enougth money to buy this/these product(s)",
+      });
+
+      return res.status(400).send({
+        error:
+          "Sorry you don't have enougth money to buy this/these product(s)",
+      });
+    }
+
+    // Get all the products of that name and cost in the global store
     const { count, rows } = await Product.findAndCountAll({
       where: {
         productName: product.productName,
@@ -112,24 +135,17 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
       },
     });
 
-    if (quantity > count)
-      return res
-        .status(400)
-        .send(`Sorry there is only ${count} ${product.productName} available`);
+    if (quantity > count) {
+      console.log({
+        error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
+      });
 
-    const { cost } = product;
+      return res.status(400).send({
+        error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
+      });
+    }
 
-    totalSpent = cost * quantity;
-    reminder = user.deposit - totalSpent;
-
-    if (reminder < 0)
-      return res
-        .status(400)
-        .send(
-          "Sorry you don't have enougth money to buy this/these product(s)",
-        );
-
-    const remainQuantity = count - quantity;
+    const remainingQuantity = count - quantity;
 
     for (let i = 0; i < quantity; i++) {
       await Product.destroy({
@@ -137,13 +153,13 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
           id: rows[i].id,
         },
       });
-      rows[i].update({ amountAvailable: remainQuantity });
+      rows[i].update({ amountAvailable: remainingQuantity });
       productsList.push(rows[i]);
     }
 
     // Update remaining product available quantity
-    for (let i = 0; i < remainQuantity; i++) {
-      rows[i].update({ amountAvailable: remainQuantity });
+    for (let i = 0; i < remainingQuantity; i++) {
+      rows[i].update({ amountAvailable: remainingQuantity });
     }
 
     const returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);

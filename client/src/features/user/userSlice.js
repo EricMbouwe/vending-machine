@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fecthProductsAsync } from '../product/productSlice';
 import {
   fetchUser,
   login,
@@ -56,10 +57,14 @@ export const resetDeposit = createAsyncThunk(
   },
 );
 
-export const makePurchase = createAsyncThunk('user/buy', async (body) => {
-  const data = await buy(body);
-  return data;
-});
+export const makePurchase = createAsyncThunk(
+  'user/buy',
+  async (body, { dispatch }) => {
+    const data = await buy(body);
+    dispatch(fecthProductsAsync());
+    return data;
+  },
+);
 
 export const userSlice = createSlice({
   name: 'user',
@@ -102,9 +107,9 @@ export const userSlice = createSlice({
       })
       .addCase(makePurchase.fulfilled, (state, action) => {
         state.returnedMoney = action.payload?.returnedMoney;
-        state.totalSpent = action.payload?.totalSpent;
+        state.totalSpent = action.payload?.totalSpent || 0;
         state.productsPurchasedList = action.payload?.productsList;
-        state.deposit = action.payload?.deposit;
+        state.deposit = action.payload?.deposit || 0;
       });
   },
 });

@@ -4,17 +4,18 @@ import { addToCart } from '../features/cart/cartSlice';
 
 function Menu() {
   const { products } = useSelector((state) => state.products);
-  const { total } = useSelector((state) => state.cart);
+  const { cartList, total } = useSelector((state) => state.cart);
   const { data: user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const handleSelect = (product) => {
     // Check if cart contains at least one product
-    if (total > 0) {
+    if (total > 0 && product?.id !== cartList[0].id) {
       alert('You can not add two different product at a time');
       return;
     }
-    // Check if product already in cart
+
+    // Add to cart or increment qty if already in cart
     dispatch(addToCart(product));
   };
 
