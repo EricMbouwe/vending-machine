@@ -38,7 +38,7 @@ app.use((req, res, next) => {
   ];
 
   if (!allowedMethods.includes(req.method)) {
-    res.status(405).send(`${req.method} not allowed.`);
+    res.status(403).send(`${req.method} not allowed.`);
   }
 
   next();
@@ -66,12 +66,13 @@ app.use(function (req, res, next) {
 });
 
 // require api routes here after I create them
+// Register my routers to the app
 app.use('/auth', require('./routes/auth'));
 app.use('/api', authUser, require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  next(createError());
 });
 
 // error handler

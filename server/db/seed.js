@@ -5,64 +5,64 @@ async function seed() {
   await db.sync({ force: true });
   console.log('db synced!');
 
-  const thomas = await User.create({
-    username: 'thomas',
+  await User.create({
+    username: 'dan',
     password: '123456',
     roleId: 2,
+    role: 'seller',
   });
 
-  const santiago = await User.create({
-    username: 'santiago',
+  await User.create({
+    username: 'ben',
     password: '123456',
   });
 
-  const chiumbo = await User.create({
-    username: 'chiumbo',
+  User.create({
+    username: 'tom',
     password: '123456',
     roleId: 2,
+    role: 'seller',
   });
 
-  const hualing = await User.create({
-    username: 'hualing',
+  await User.create({
+    username: 'mat',
     password: '123456',
   });
 
-  const beef = await Product.create({
+  await Product.create({
     productName: 'beef',
     cost: 368,
     sellerId: 1,
     amountAvailable: 1,
   });
 
-  const tomato = await Product.create({
+  await Product.create({
     productName: 'tomato',
     cost: 345,
     sellerId: 1,
     amountAvailable: 1,
   });
 
-  const coconut = await Product.create({
+  await Product.create({
     productName: 'coconut',
     cost: 185,
     sellerId: 2,
     amountAvailable: 1,
   });
 
-  const buyer = await Role.create({
+  await Role.create({
     name: 'buyer',
   });
 
-  const seller = await Role.create({
+  await Role.create({
     name: 'seller',
   });
 
-  const admin = await Role.create({
+  await Role.create({
     name: 'admin',
   });
 
-  // const defaultRole = await Role.create({});
-
-  console.log(`seeded users and products`);
+  console.log(`seeded users, products and roles`);
 }
 
 async function runSeed() {

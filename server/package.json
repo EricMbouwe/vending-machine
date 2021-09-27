@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
-    "test": "NODE_ENV=test ./node_modules/.bin/jest",
+    "test": "jest --watch --detectOpenHandles --runInBand --verbose",
     "seed": "node db/seed.js"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "sequelize": "^6.3.5"
   },
   "devDependencies": {
-    "jest": "^27.1.1"
+    "jest": "^27.1.1",
+    "supertest": "^6.1.6"
   }
 }

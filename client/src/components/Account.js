@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import {
-  resetDeposit,
-  makeDeposit,
-  depositCoins,
-} from '../features/user/userSlice';
+import { resetDeposit, makeDeposit } from '../features/user/userSlice';
 
 function Account() {
   const { deposit, returnedMoney } = useSelector((state) => state.user);
@@ -13,14 +9,16 @@ function Account() {
   const dispatch = useDispatch();
 
   const coins = [100, 50, 20, 10, 5];
+  const [totalEntered, setTotalEntered] = useState(0);
 
   const handleDeposit = (coin) => {
-    dispatch(depositCoins(coin));
     dispatch(makeDeposit({ amount: coin }));
+    setTotalEntered((prev) => prev + coin);
   };
 
   const handleReset = () => {
     dispatch(resetDeposit());
+    setTotalEntered(0);
   };
 
   const formatChange = (denominationsHash) => {
@@ -51,7 +49,7 @@ function Account() {
         ))}
         <Amount>
           <span>Total: </span>
-          <span>{deposit}</span>
+          <span>{totalEntered}</span>
         </Amount>
         <Change>
           <h4>Change returned on reset</h4>

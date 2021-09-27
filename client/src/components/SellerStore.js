@@ -19,8 +19,6 @@ function SellerStore() {
 
   const handleCreateProduct = async (event) => {
     event.preventDefault();
-    console.log(productName);
-    console.log(cost);
     dispatch(createProductAsync({ productName, cost }));
   };
 
@@ -89,7 +87,7 @@ function SellerStore() {
               />
             </FormControl>
           </Grid>
-          <Button type="submit">New Product</Button>
+          <Button type="submit">Create</Button>
         </form>
       </Box>
     </Box>

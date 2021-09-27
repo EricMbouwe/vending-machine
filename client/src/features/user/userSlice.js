@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fecthProductsAsync } from '../product/productSlice';
 import {
   fetchUser,
   login,
@@ -14,7 +15,7 @@ const initialState = {
   deposit: 0,
   returnedMoney: {},
   totalSpent: 0,
-  productsList: [],
+  productsPurchasedList: [],
   status: null,
 };
 
@@ -40,11 +41,6 @@ export const logoutUser = createAsyncThunk('user/logout', async () => {
   await logout();
 });
 
-export const makePurchase = createAsyncThunk('user/buy', async (body) => {
-  const data = await buy(body);
-  return data;
-});
-
 export const makeDeposit = createAsyncThunk(
   'user/makeDeposit',
   async (body) => {
@@ -61,14 +57,19 @@ export const resetDeposit = createAsyncThunk(
   },
 );
 
+export const makePurchase = createAsyncThunk(
+  'user/buy',
+  async (body, { dispatch }) => {
+    const data = await buy(body);
+    dispatch(fecthProductsAsync());
+    return data;
+  },
+);
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    depositCoins: (state, action) => {
-      state.deposit += action.payload;
-    },
-  },
+  reducers: {},
 
   extraReducers: (builder) => {
     builder
@@ -78,40 +79,40 @@ export const userSlice = createSlice({
       .addCase(fecthUserAsync.fulfilled, (state, action) => {
         state.status = 'success';
         state.data = action.payload;
-        state.deposit = action.payload.deposit;
+        state.deposit = action.payload?.deposit;
       })
       .addCase(fecthUserAsync.rejected, (state) => {
         state.status = 'failed';
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.data = action.payload;
+        state.deposit = action.payload?.deposit;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.data = action.payload;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.data = action.payload;
+        state.deposit = action.payload?.deposit;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.data = {};
       })
-      .addCase(makePurchase.fulfilled, (state, action) => {
-        state.returnedMoney = action.payload.returnedMoney;
-        state.totalSpent = action.payload.totalSpent;
-        state.productsList = action.payload.productsList;
-        state.deposit = action.payload.deposit;
+      .addCase(makeDeposit.fulfilled, (state, action) => {
+        state.deposit = action.payload?.deposit;
       })
       .addCase(resetDeposit.fulfilled, (state, action) => {
-        state.deposit = action.payload.deposit;
-        state.returnedMoney = action.payload.returnedMoney;
+        state.deposit = action.payload?.deposit;
+        state.returnedMoney = action.payload?.returnedMoney;
       })
-      .addCase(makeDeposit.fulfilled, (state, action) => {
-        state.data.deposit = action.payload.deposit;
+      .addCase(makePurchase.fulfilled, (state, action) => {
+        state.returnedMoney = action.payload?.returnedMoney;
+        state.totalSpent = action.payload?.totalSpent || 0;
+        state.productsPurchasedList = action.payload?.productsList;
+        state.deposit = action.payload?.deposit || 0;
       });
   },
 });
-
-export const { depositCoins } = userSlice.actions;
 
 export const selectUser = (state) => state.user;
 
