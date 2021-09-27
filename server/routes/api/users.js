@@ -48,8 +48,14 @@ router.post('/deposit', authRole('buyer'), async (req, res, next) => {
     const user = req.user;
 
     const { amount } = req.body;
-    const newAmount = user.deposit + amount;
+    const denominations = [100, 50, 20, 10, 5];
 
+    if (!denominations.includes(amount)) {
+      console.log({ error: 'This amount is not allowed' });
+      return res.status(403).send({ error: 'This amount is not allowed' });
+    }
+
+    const newAmount = user.deposit + amount;
     user.update({ deposit: newAmount });
 
     res.json(user);
@@ -121,7 +127,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
           "Sorry you don't have enougth money to buy this/these product(s)",
       });
 
-      return res.status(400).send({
+      return res.status(403).send({
         error:
           "Sorry you don't have enougth money to buy this/these product(s)",
       });
@@ -140,7 +146,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
         error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
       });
 
-      return res.status(400).send({
+      return res.status(403).send({
         error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
       });
     }
