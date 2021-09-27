@@ -50,7 +50,6 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    // expects username and password in req.body
     const { username, password } = req.body;
     if (!username || !password)
       return res.status(400).json({ error: 'Username and password required' });
@@ -100,7 +99,7 @@ router.get('/user', (req, res, next) => {
   if (req.user) {
     return res.json(req.user);
   } else {
-    return res.status(404).json({ message: 'No Logged User' });
+    return res.status(404).send({ message: 'No Logged User' });
   }
 });
 

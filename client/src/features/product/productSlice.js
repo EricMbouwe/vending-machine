@@ -66,9 +66,13 @@ export const productSlice = createSlice({
       })
       .addCase(createProductAsync.fulfilled, (state, action) => {
         state.sellerProducts.push(action.payload);
+        state.products.push(action.payload);
       })
       .addCase(deleteProductAsync.fulfilled, (state, action) => {
         state.sellerProducts = state.sellerProducts.filter(
+          (item) => item.id !== action.payload.id,
+        );
+        state.products = state.products.filter(
           (item) => item.id !== action.payload.id,
         );
       });

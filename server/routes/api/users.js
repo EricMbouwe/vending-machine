@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { User, Product, Role } = require('../../db/models');
 const { Op } = require('sequelize');
-const { authRole } = require('../../authHelper');
+const { authRole, authUser } = require('../../authHelper');
 
 // find user by username
 router.get('/:username', async (req, res, next) => {
@@ -17,7 +17,10 @@ router.get('/:username', async (req, res, next) => {
     });
 
     if (!user) {
-      return next({ status: 404, message: 'This user does not exist!' });
+      return next({
+        status: 404,
+        message: 'The user with the given id does not exist!',
+      });
     }
 
     res.json(user);
@@ -32,12 +35,6 @@ router.get('/', async (req, res, next) => {
     const users = await User.findAll();
 
     if (users.length < 1) return res.send('No user found');
-
-    for (user of users) {
-      const roleId = user.roleId;
-      const role = await Role.getRoleName(roleId);
-      user.update({ role: role });
-    }
 
     res.json(users);
   } catch (error) {
@@ -65,6 +62,10 @@ router.post('/deposit', authRole('buyer'), async (req, res, next) => {
 router.post('/reset', authRole('buyer'), async (req, res, next) => {
   try {
     const user = req.user;
+
+    if (user.deposit === 0) {
+      return res.send(user);
+    }
 
     const returnedMoney = user.dispenseCoins(
       user.deposit,
@@ -99,8 +100,34 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
       },
     });
 
-    if (!product) return res.send('Sorry this product is not available');
+    if (!product) {
+      console.log({
+        error: 'Sorry the product with the given id is not available',
+      });
 
+      return res.status(404).send({
+        error: 'Sorry the product with the given id is not available',
+      });
+    }
+
+    const { cost } = product;
+
+    totalSpent = cost * quantity;
+    reminder = user.deposit - totalSpent;
+
+    if (reminder < 0) {
+      console.log({
+        error:
+          "Sorry you don't have enougth money to buy this/these product(s)",
+      });
+
+      return res.status(400).send({
+        error:
+          "Sorry you don't have enougth money to buy this/these product(s)",
+      });
+    }
+
+    // Get all the products of that name and cost in the global store
     const { count, rows } = await Product.findAndCountAll({
       where: {
         productName: product.productName,
@@ -108,18 +135,17 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
       },
     });
 
-    if (quantity > count)
-      return res.send(
-        `Sorry there is only ${count} ${product.productName} available`,
-      );
+    if (quantity > count) {
+      console.log({
+        error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
+      });
 
-    const { cost } = product;
+      return res.status(400).send({
+        error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
+      });
+    }
 
-    totalSpent = cost * quantity;
-    reminder = user.deposit - totalSpent;
-
-    if (reminder < 0)
-      return res.send("Sorry you don't have enougth money to buy this product");
+    const remainingQuantity = count - quantity;
 
     for (let i = 0; i < quantity; i++) {
       await Product.destroy({
@@ -127,13 +153,13 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
           id: rows[i].id,
         },
       });
-      rows[i].update({ amountAvailable: count - quantity });
+      rows[i].update({ amountAvailable: remainingQuantity });
       productsList.push(rows[i]);
     }
 
     // Update remaining product available quantity
-    for (let i = 0; i < count; i++) {
-      rows[i].update({ amountAvailable: count - quantity });
+    for (let i = 0; i < remainingQuantity; i++) {
+      rows[i].update({ amountAvailable: remainingQuantity });
     }
 
     const returnedMoney = user.dispenseCoins(reminder, [100, 50, 20, 10, 5]);

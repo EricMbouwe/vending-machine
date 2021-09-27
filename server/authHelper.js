@@ -1,5 +1,3 @@
-const { Role } = require('./db/models');
-
 function authUser(req, res, next) {
   if (!req.user) {
     res.status(401);
