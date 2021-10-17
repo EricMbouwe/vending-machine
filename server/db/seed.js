@@ -17,18 +17,6 @@ async function seed() {
     password: '123456',
   });
 
-  User.create({
-    username: 'tom',
-    password: '123456',
-    roleId: 2,
-    role: 'seller',
-  });
-
-  await User.create({
-    username: 'mat',
-    password: '123456',
-  });
-
   await Product.create({
     productName: 'beef',
     cost: 368,
@@ -46,6 +34,13 @@ async function seed() {
   await Product.create({
     productName: 'coconut',
     cost: 185,
+    sellerId: 2,
+    amountAvailable: 1,
+  });
+
+  await Product.create({
+    productName: 'tea',
+    cost: 285,
     sellerId: 2,
     amountAvailable: 1,
   });

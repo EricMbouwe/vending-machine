@@ -2,12 +2,10 @@ const createError = require('http-errors');
 const express = require('express');
 const { join } = require('path');
 const logger = require('morgan');
-const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./db');
-const { User } = require('./db/models');
-const { authUser } = require('./authHelper');
+const { authToken, authUser } = require('./authHelper');
 
 // create store for sessions to persist in our database
 const sessionStore = new SequelizeStore({ db });
@@ -44,31 +42,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Check the cookie sent by the client for any request and set the req.user to the authenticated user
-app.use(function (req, res, next) {
-  const token = req.cookies.token;
-
-  if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
-      if (err) {
-        return next();
-      }
-      User.findOne({
-        where: { id: decodedToken.id },
-      }).then((user) => {
-        req.user = user;
-        return next();
-      });
-    });
-  } else {
-    return next();
-  }
-});
-
 // require api routes here after I create them
 // Register my routers to the app
-app.use('/auth', require('./routes/auth'));
-app.use('/api', authUser, require('./routes/api'));
+app.use('/auth',authToken, require('./routes/auth'));
+app.use('/api',authToken, authUser, require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
