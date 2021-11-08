@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 
 // require api routes here after I create them
 // Register my routers to the app
-app.use('/auth', require('./routes/auth'));
+app.use('/auth', authenticateToken, require('./routes/auth')); // authToken for current user and logout routes
 app.use('/api', authenticateToken, authUser, require('./routes/api'));
 
 // catch 404 and forward to error handler

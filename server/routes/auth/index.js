@@ -73,7 +73,7 @@ router.post('/login', async (req, res, next) => {
 router.delete('/logout', (req, res, next) => {
   if (req.user) {
     return res.clearCookie('token').sendStatus(204);
-  }else {
+  } else {
     return res.status(404).send({ message: 'No Logged User' });
   }
 });
@@ -88,3 +88,19 @@ router.get('/user', (req, res, next) => {
 });
 
 module.exports = router;
+
+// router.post('/token', (req, res) => {
+//   const refreshToken = req.body.token;
+//   if (refreshToken == null) return res.sendStatus(401);
+//   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+//   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+//     if (err) return res.sendStatus(403);
+//     const accessToken = generateAccessToken({ name: user.name });
+//     res.json({ accessToken: accessToken });
+//   });
+// });
+
+// router.delete('/logout', (req, res) => {
+//   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+//   res.sendStatus(204);
+// });
