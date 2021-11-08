@@ -5,7 +5,7 @@ const logger = require('morgan');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./db');
-const { authToken, authUser } = require('./authHelper');
+const { authenticateToken, authUser } = require('./authHelper');
 
 // create store for sessions to persist in our database
 const sessionStore = new SequelizeStore({ db });
@@ -44,8 +44,8 @@ app.use((req, res, next) => {
 
 // require api routes here after I create them
 // Register my routers to the app
-app.use('/auth',authToken, require('./routes/auth'));
-app.use('/api',authToken, authUser, require('./routes/api'));
+app.use('/auth', require('./routes/auth'));
+app.use('/api', authenticateToken, authUser, require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

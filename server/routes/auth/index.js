@@ -4,6 +4,12 @@ const router = require('express').Router();
 const { User, Role } = require('../../db/models');
 const jwt = require('jsonwebtoken');
 
+function generateAccessToken(user) {
+  return jwt.sign({ id: user.dataValues.id }, process.env.SESSION_SECRET, {
+    expiresIn: 86400,
+  });
+}
+
 router.post('/register', async (req, res, next) => {
   try {
     const { username, password, roleId } = req.body;
@@ -20,20 +26,7 @@ router.post('/register', async (req, res, next) => {
 
     const user = await User.create(req.body);
 
-    const token = jwt.sign(
-      { id: user.dataValues.id },
-      process.env.SESSION_SECRET,
-      { expiresIn: 86400 },
-    );
-
-    if (!req.cookies || !req.cookies.token) {
-      res.cookie('token', token, {
-        sameSite: true,
-        secure: true,
-        maxAge: 86400000,
-        httpOnly: true,
-      });
-    }
+    const token = generateAccessToken(user);
 
     const role = await Role.getRoleName(roleId);
     user.update({ role: role });
@@ -67,20 +60,7 @@ router.post('/login', async (req, res, next) => {
       console.log({ error: 'Wrong username and/or password' });
       res.status(401).json({ error: 'Wrong username and/or password' });
     } else {
-      const token = jwt.sign(
-        { id: user.dataValues.id },
-        process.env.SESSION_SECRET,
-        { expiresIn: 86400 },
-      );
-
-      if (!req.cookies || !req.cookies.token) {
-        res.cookie('token', token, {
-          sameSite: true,
-          secure: true,
-          maxAge: 86400000,
-          httpOnly: true,
-        });
-      }
+      const token = generateAccessToken(user);
 
       res.json({ ...user.dataValues, token });
     }
@@ -91,7 +71,11 @@ router.post('/login', async (req, res, next) => {
 
 // Logout the user
 router.delete('/logout', (req, res, next) => {
-  return res.clearCookie('token').sendStatus(204);
+  if (req.user) {
+    return res.clearCookie('token').sendStatus(204);
+  }else {
+    return res.status(404).send({ message: 'No Logged User' });
+  }
 });
 
 // Get the logged in user
@@ -100,17 +84,6 @@ router.get('/user', (req, res, next) => {
     return res.json(req.user);
   } else {
     return res.status(404).send({ message: 'No Logged User' });
-  }
-});
-
-// Get roles
-router.get('/roles', async (req, res, next) => {
-  try {
-    const roles = await Role.getRoles();
-
-    res.json(roles);
-  } catch (error) {
-    next(error);
   }
 });
 

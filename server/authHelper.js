@@ -10,21 +10,21 @@ function authUser(req, res, next) {
   next();
 }
 
+function authRole(role) {
+  return (req, res, next) => {
+    if (req.user.role !== role) {
+      res.status(403);
+      return res.send({ error: 'Not allowed' });
+    }
+
+    next();
+  };
+}
+
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log(err);
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
-
-function authToken(req, res, next) {
-  const token = req.cookies.token;
+  // if (token == null) return res.sendStatus(401);
 
   if (token) {
     jwt.verify(token, process.env.SESSION_SECRET, async (err, decodedToken) => {
@@ -41,20 +41,8 @@ function authToken(req, res, next) {
   }
 }
 
-function authRole(role) {
-  return (req, res, next) => {
-    if (req.user.role !== role) {
-      res.status(403);
-      return res.send({ error: 'Not allowed' });
-    }
-
-    next();
-  };
-}
-
 module.exports = {
   authenticateToken,
-  authToken,
   authUser,
   authRole,
 };
