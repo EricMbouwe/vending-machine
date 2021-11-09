@@ -127,7 +127,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
           "Sorry you don't have enougth money to buy this/these product(s)",
       });
 
-      return res.status(403).send({
+      return res.status(403).json({
         error:
           "Sorry you don't have enougth money to buy this/these product(s)",
       });

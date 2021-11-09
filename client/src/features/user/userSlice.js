@@ -61,6 +61,8 @@ export const makePurchase = createAsyncThunk(
   'user/buy',
   async (body, { dispatch }) => {
     const data = await buy(body);
+    console.log('BUY', data);
+    
     dispatch(fecthProductsAsync());
     return data;
   },

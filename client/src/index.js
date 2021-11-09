@@ -9,7 +9,7 @@ import axios from 'axios';
 
 axios.interceptors.request.use((request) => {
   const token = localStorage.getItem('vm-token');
-  request.headers['authorization'] = `Bearer ${token}`;
+  if (token) request.headers['authorization'] = `Bearer ${token}`;
 
   return request;
 });

@@ -41,6 +41,8 @@ export const logout = async () => {
 export const buy = async (body) => {
   try {
     const { data } = await axios.post('/api/users/buy', body);
+    console.log('BUY API', data);
+
     return data;
   } catch (error) {
     console.error(error);
