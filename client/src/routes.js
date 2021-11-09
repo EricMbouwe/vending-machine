@@ -11,8 +11,6 @@ const Routes = () => {
     return <div>Loading...</div>;
   }
 
-  console.log('USER', user);
-
   return (
     <>
       <Switch>

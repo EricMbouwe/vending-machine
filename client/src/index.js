@@ -5,6 +5,19 @@ import App from './App';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import axios from 'axios';
+
+axios.interceptors.request.use((request) => {
+  const token = localStorage.getItem('vm-token');
+  request.headers['authorization'] = `Bearer ${token}`;
+
+  return request;
+});
+
+axios.interceptors.response.use((response) => {
+  console.log('AXIOS RESPONSE', response);
+  return response;
+});
 
 ReactDOM.render(
   <React.StrictMode>
@@ -12,7 +25,7 @@ ReactDOM.render(
       <App />
     </Provider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

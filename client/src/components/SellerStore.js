@@ -20,6 +20,10 @@ function SellerStore() {
   const handleCreateProduct = async (event) => {
     event.preventDefault();
     dispatch(createProductAsync({ productName, cost }));
+    setState({
+      productName: '',
+      cost: 0,
+    });
   };
 
   const handleChange = (event) => {

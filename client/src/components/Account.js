@@ -30,6 +30,18 @@ function Account() {
         <span> {value}</span>
       </div>
     ));
+
+    // let k, v
+    // for ([k, v] in denominationsHash) {
+    //   return (
+    //     <div key={k}>
+    //       <span>
+    //         <b>{k} </b>:
+    //       </span>
+    //       <span> {v}</span>
+    //     </div>
+    //   );
+    // }
   };
 
   return (
