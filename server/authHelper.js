@@ -27,23 +27,21 @@ function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, async (err, decodedToken) => {
-      if (err) {
-        console.log('Invalid Token');
-        return res.sendStatus(403);
-      }
+  if (!token) return next();
 
-      const user = await User.findOne({
-        where: { id: decodedToken.id },
-      });
-      req.user = user;
-      next();
+  jwt.verify(token, process.env.SESSION_SECRET, async (err, decodedToken) => {
+    if (err) {
+      console.log('Invalid Token');
+      return res.sendStatus(403);
+    }
+
+    const user = await User.findOne({
+      where: { id: decodedToken.id },
     });
-  } else {
-    console.log('No Token');
+
+    req.user = user;
     next();
-  }
+  });
 }
 
 module.exports = {

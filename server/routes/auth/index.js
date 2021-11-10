@@ -5,7 +5,13 @@ const { User, Role } = require('../../db/models');
 const jwt = require('jsonwebtoken');
 
 function generateAccessToken(user) {
-  return jwt.sign({ id: user.dataValues.id }, process.env.SESSION_SECRET, {
+  const userData = {
+    id: user.dataValues.id,
+    username: user.dataValues.username,
+    role: user.dataValues.role,
+  };
+
+  return jwt.sign(userData, process.env.SESSION_SECRET, {
     expiresIn: 86400,
   });
 }
