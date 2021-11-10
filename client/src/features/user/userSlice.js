@@ -17,6 +17,7 @@ const initialState = {
   totalSpent: 0,
   productsPurchasedList: [],
   status: null,
+  errMessage: '',
 };
 
 export const fecthUserAsync = createAsyncThunk('user/fetchUser', async () => {
@@ -62,7 +63,7 @@ export const makePurchase = createAsyncThunk(
   async (body, { dispatch }) => {
     const data = await buy(body);
     console.log('BUY', data);
-    
+
     dispatch(fecthProductsAsync());
     return data;
   },
@@ -83,8 +84,9 @@ export const userSlice = createSlice({
         state.data = action.payload;
         state.deposit = action.payload?.deposit;
       })
-      .addCase(fecthUserAsync.rejected, (state) => {
+      .addCase(fecthUserAsync.rejected, (state, action) => {
         state.status = 'failed';
+        state.errMessage = action.error.message || '';
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.data = action.payload;

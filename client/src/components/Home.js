@@ -1,6 +1,5 @@
 import { logoutUser } from '../features/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Menu from './Menu';
 import { useEffect } from 'react';
@@ -14,7 +13,6 @@ import Account from './Account';
 
 function Home() {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const { data: user } = useSelector((state) => state.user);
 
@@ -24,7 +22,6 @@ function Home() {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    history.push('/login');
   };
 
   return (
