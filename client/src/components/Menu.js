@@ -1,6 +1,7 @@
+import React from 'react';
 // import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+
 import { addToCart } from '../features/cart/cartSlice';
 
 function Menu() {
@@ -27,43 +28,29 @@ function Menu() {
   };
 
   return (
-    <Box>
+    <div>
       <h2>Products Menu</h2>
-      <Box>
-        <ProductList>
+      <div>
+        <ul>
           {products &&
             products.map((product) => (
-              <Product key={product.id}>
-                <Box>{product.productName}</Box>
-                <Box>{product.cost}</Box>
+              <li key={product.id}>
+                <div>{product.productName}</div>
+                <div>{product.cost}</div>
                 {user.role === 'buyer' && (
-                  <Button
+                  <button
                     onClick={() => handleSelect(product)}
                     disabled={product.amountAvailable === total}
                   >
                     Add
-                  </Button>
+                  </button>
                 )}
-              </Product>
+              </li>
             ))}
-        </ProductList>
-      </Box>
-    </Box>
+        </ul>
+      </div>
+    </div>
   );
 }
-
-const Box = styled.div``;
-const ProductList = styled.ul`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const Product = styled.li`
-  list-style-type: none;
-  margin: 10px;
-`;
-const Button = styled.button`
-  cursor: pointer;
-`;
 
 export default Menu;

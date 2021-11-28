@@ -1,6 +1,7 @@
+import React from 'react';
 import { logoutUser } from '../features/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+
 import Menu from './Menu';
 import { useEffect } from 'react';
 import {
@@ -25,15 +26,15 @@ function Home() {
   };
 
   return (
-    <Box>
+    <div>
       <h1>Home page</h1>
       <h2>{user.username.toUpperCase()}</h2>
       {user.role === 'seller' && (
-        <Button onClick={() => dispatch(fecthProductsBySeller(user.id))}>
+        <button onClick={() => dispatch(fecthProductsBySeller(user.id))}>
           My Store
-        </Button>
+        </button>
       )}
-      <Button onClick={handleLogout}>Logout</Button>
+      <button onClick={handleLogout}>Logout</button>
       <hr />
       {user.role === 'buyer' && <Account />}
       <hr />
@@ -42,13 +43,8 @@ function Home() {
       {user.role === 'buyer' && <Cart />}
       <hr />
       {user.role === 'seller' && <SellerStore />}
-    </Box>
+    </div>
   );
 }
-
-const Box = styled.div``;
-const Button = styled.button`
-  cursor: pointer;
-`;
 
 export default Home;

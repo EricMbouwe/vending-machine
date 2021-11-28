@@ -1,6 +1,7 @@
+import React from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+
 import { resetDeposit, makeDeposit } from '../features/user/userSlice';
 
 function Account() {
@@ -45,45 +46,34 @@ function Account() {
   };
 
   return (
-    <Box>
+    <div>
       <h2>My Account</h2>
-      <Box>
+      <div>
         <span>Balance: </span>
         <span>${deposit}</span>
-      </Box>
+      </div>
 
-      <DepositPad>
+      <div>
         <p>Click on coins to deposit</p>
-        {coins.map((coin) => (
-          <Button key={coin} onClick={() => handleDeposit(coin)}>
-            {coin}
-          </Button>
-        ))}
-        <Amount>
+        <ul>
+          {coins.map((coin) => (
+            <li key={coin}>
+              <button onClick={() => handleDeposit(coin)}>{coin}</button>
+            </li>
+          ))}
+        </ul>
+        <div>
           <span>Total: </span>
           <span>{totalEntered}</span>
-        </Amount>
-        <Change>
+        </div>
+        <div>
           <h4>Change returned on reset</h4>
           {returnedMoney && formatChange(returnedMoney)}
-        </Change>
-        <Button onClick={handleReset}>Reset</Button>
-      </DepositPad>
-    </Box>
+        </div>
+        <button onClick={handleReset}>Reset</button>
+      </div>
+    </div>
   );
 }
 
-const Box = styled.div``;
-const Button = styled.button`
-  cursor: pointer;
-`;
-const DepositPad = styled.div`
-  margin: 30px 0;
-`;
-const Amount = styled.div`
-  margin: 30px 0;
-`;
-const Change = styled.div`
-  margin: 30px 0;
-`;
 export default Account;

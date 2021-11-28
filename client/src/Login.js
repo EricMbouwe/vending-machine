@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from './features/user/userSlice';
 import { Redirect, useHistory } from 'react-router-dom';
@@ -35,19 +35,19 @@ function Login() {
 
   return (
     <div>
-      <h1>LOGIN PAGE</h1>
+      <h1 className="text-xlg font-bold">LOGIN PAGE</h1>
 
-      <FormBox>
-        <Grid>
-          <span>Need to register?</span>
-          <Button onClick={() => history.push('/register')}>Register</Button>
-        </Grid>
+      <div>
+        <div className="text-red-700">
+          <span className="text-blue-700">Need to register?</span>
+          <button onClick={() => history.push('/register')}>Register</button>
+        </div>
 
         <form onSubmit={handleRegister}>
-          <Grid>
-            <Grid>
-              <FormControl>
-                <TextField
+          <div>
+            <div>
+              <div>
+                <input
                   aria-label="username"
                   label="Username"
                   name="username"
@@ -57,12 +57,12 @@ function Login() {
                   placeholder="Username"
                   required
                 />
-              </FormControl>
-            </Grid>
+              </div>
+            </div>
 
-            <Grid>
-              <FormControl>
-                <TextField
+            <div>
+              <div>
+                <input
                   aria-label="password"
                   label="Password"
                   type="password"
@@ -73,29 +73,17 @@ function Login() {
                   onChange={handleChange}
                   required
                 />
-              </FormControl>
-            </Grid>
+              </div>
+            </div>
 
-            <Button type="submit">Login</Button>
-          </Grid>
+            <button className="text-yellow-200" type="submit">
+              Login
+            </button>
+          </div>
         </form>
-      </FormBox>
+      </div>
     </div>
   );
 }
-
-const FormBox = styled.div``;
-
-const Grid = styled.div`
-  margin: 0.5rem 0;
-`;
-
-const FormControl = styled.div``;
-
-const TextField = styled.input``;
-
-const Button = styled.button`
-  cursor: pointer;
-`;
 
 export default Login;

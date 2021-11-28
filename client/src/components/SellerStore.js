@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+
 import {
   createProductAsync,
   deleteProductAsync,
@@ -35,37 +35,37 @@ function SellerStore() {
   };
 
   return (
-    <Box>
+    <div>
       <hr />
       <h2>My Store</h2>
-      <Box>
-        <ProductList>
+      <div>
+        <ul>
           {sellerProducts &&
             sellerProducts.map((product) => (
-              <Product key={product?.id}>
-                <Box>{product?.productName}</Box>
-                <Box>{product?.cost}</Box>
-                <Button onClick={() => console.log('Open edit form')}>
+              <li key={product?.id}>
+                <div>{product?.productName}</div>
+                <div>{product?.cost}</div>
+                <button onClick={() => console.log('Open edit form')}>
                   Edit
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => dispatch(deleteProductAsync(product.id))}
                 >
                   Delete
-                </Button>
-              </Product>
+                </button>
+              </li>
             ))}
-        </ProductList>
-      </Box>
+        </ul>
+      </div>
 
       <hr />
 
-      <Box>
+      <div>
         <h2>Create a new product</h2>
         <form onSubmit={handleCreateProduct}>
-          <Grid>
-            <FormControl>
-              <TextField
+          <div>
+            <div>
+              <input
                 aria-label="productName"
                 name="productName"
                 value={productName}
@@ -74,12 +74,12 @@ function SellerStore() {
                 placeholder="productName"
                 required
               />
-            </FormControl>
-          </Grid>
+            </div>
+          </div>
 
-          <Grid>
-            <FormControl>
-              <TextField
+          <div>
+            <div>
+              <input
                 aria-label="cost"
                 type="number"
                 min="0"
@@ -89,32 +89,13 @@ function SellerStore() {
                 onChange={handleChange}
                 required
               />
-            </FormControl>
-          </Grid>
-          <Button type="submit">Create</Button>
+            </div>
+          </div>
+          <button type="submit">Create</button>
         </form>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
-
-const Box = styled.div``;
-const Grid = styled.div`
-  margin: 0.5rem 0;
-`;
-const FormControl = styled.div``;
-const TextField = styled.input``;
-const ProductList = styled.ul`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const Product = styled.li`
-  list-style-type: none;
-  margin: 10px;
-`;
-const Button = styled.button`
-  cursor: pointer;
-`;
 
 export default SellerStore;

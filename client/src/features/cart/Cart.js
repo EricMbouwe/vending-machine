@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import React from 'react';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { makePurchase } from '../user/userSlice';
 import { removeFromCart, deleteFromCart } from './cartSlice';
@@ -46,12 +47,14 @@ function Cart() {
       <h2>
         Cart <span>[{total}]</span>
       </h2>
-      {total > 0 && (
-        <Product>
-          <span>{cartList[0].productName} </span>
-          <span>{cartList[0].cost} </span>
 
-          {/* <QuantityInput
+      <ul>
+        {total > 0 && (
+          <li>
+            <span>{cartList[0].productName} </span>
+            <span>{cartList[0].cost} </span>
+
+            {/* <QuantityInput
             value={quantity}
             placeholder="quantity"
             type="number"
@@ -59,74 +62,46 @@ function Cart() {
             onChange={handleChangeQuantity}
           /> */}
 
-          <Button onClick={handleRemoveItem}>Remove One</Button>
-          <Button onClick={() => dispatch(deleteFromCart())}>Delete</Button>
-        </Product>
-      )}
+            <button onClick={handleRemoveItem}>Remove One</button>
+            <button onClick={() => dispatch(deleteFromCart())}>Delete</button>
+          </li>
+        )}
+      </ul>
 
-      <Box>
-        <Button onClick={handleBuy} disabled={total < 1}>
+      <div>
+        <button onClick={handleBuy} disabled={total < 1}>
           Buy
-        </Button>
-      </Box>
+        </button>
+      </div>
 
-      <Box>
+      <div>
         <h3>Total</h3>
         <span>${amount}</span>
 
-        <ReturnedItems>
-          <Change>
+        <div>
+          <div>
             <h4>Change returned</h4>
             {returnedMoney && formatChange(returnedMoney)}
-          </Change>
+          </div>
 
-          <Box>
+          <div>
             <h4>Product list</h4>
-            <ProductList>
+            <ul>
               {productsPurchasedList &&
                 productsPurchasedList.map((product) => (
                   <li key={product.id}>{product.productName}</li>
                 ))}
-            </ProductList>
-          </Box>
+            </ul>
+          </div>
 
-          <Box>
+          <div>
             <h4>Total spent</h4>
             <span>${totalSpent}</span>
-          </Box>
-        </ReturnedItems>
-      </Box>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-const Box = styled.div``;
-const Product = styled.div`
-  margin: 10px 0;
-`;
-const Button = styled.button`
-  cursor: pointer;
-  margin-left: 5px;
-`;
-
-// const QuantityInput = styled.input`
-//   width: 60px;
-// `;
-
-const Change = styled.div``;
-
-const ReturnedItems = styled.div`
-  margin: 30px 0;
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-`;
-
-const ProductList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 export default Cart;
