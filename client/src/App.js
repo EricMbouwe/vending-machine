@@ -3,9 +3,9 @@ import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import './App.css';
 import Routes from './routes';
 import { fecthUserAsync } from './features/user/userSlice';
+import GuestHeader from './components/GuestHeader';
 
 function App() {
   const dispatch = useDispatch();
@@ -15,7 +15,8 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="App">
+    <div className="">
+      <GuestHeader />
       <BrowserRouter>
         <Routes />
       </BrowserRouter>

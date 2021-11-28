@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#root {
+  min-height: 100%;
+}
+
+* {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.42857143;
+}

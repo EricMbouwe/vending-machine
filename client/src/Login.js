@@ -35,11 +35,11 @@ function Login() {
 
   return (
     <div>
-      <h1 className="text-xlg font-bold">LOGIN PAGE</h1>
+      <h1 className="">LOGIN PAGE</h1>
 
       <div>
-        <div className="text-red-700">
-          <span className="text-blue-700">Need to register?</span>
+        <div className="">
+          <span className="">Need to register?</span>
           <button onClick={() => history.push('/register')}>Register</button>
         </div>
 
@@ -76,7 +76,7 @@ function Login() {
               </div>
             </div>
 
-            <button className="text-yellow-200" type="submit">
+            <button className="" type="submit">
               Login
             </button>
           </div>
