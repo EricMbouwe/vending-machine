@@ -20,11 +20,13 @@ export const register = async (credentials) => {
 
 export const login = async (credentials) => {
   try {
-    const { data } = await axios.post('/auth/login', credentials);
-    localStorage.setItem('vm-token', data.token);
-    return data;
-  } catch (error) {
-    console.error(error);
+    const response = await axios.post('/auth/login', credentials);
+
+    localStorage.setItem('vm-token', response.data.token);
+    return response.data;
+  } catch (err) {
+    console.log('ERROR', err.response.data.error);
+    throw Error(err.response.data.error);
   }
 };
 
