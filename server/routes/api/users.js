@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { User, Product, Role } = require('../../db/models');
 const { Op } = require('sequelize');
-const { authRole, authUser } = require('../../authHelper');
+const { authRole } = require('../../authHelper');
 
 // find user by username
 router.get('/:username', async (req, res, next) => {
@@ -19,7 +19,7 @@ router.get('/:username', async (req, res, next) => {
     if (!user) {
       return next({
         status: 404,
-        message: 'The user with the given id does not exist!',
+        error: 'The user with the given id does not exist!',
       });
     }
 

@@ -95,7 +95,8 @@ export const userSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.data = action.payload;
+        state.deposit = 0;
+        state.errMessage = action.error.message || '';
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'success';

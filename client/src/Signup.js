@@ -14,7 +14,7 @@ import { FcGoogle } from 'react-icons/fc';
 const Signup = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.user);
+  const { status, errMessage } = useSelector((state) => state.user);
 
   if (status === 'success') {
     return <Redirect to="/home" />;
@@ -119,6 +119,12 @@ const Signup = () => {
           Log In
         </button>
       </div>
+
+      {errMessage.length > 0 ? (
+        <div className="text-center py-3 rounded-lg bg-red-300 text-white">
+          {errMessage}
+        </div>
+      ) : null}
     </div>
   );
 };
