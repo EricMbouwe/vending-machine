@@ -80,7 +80,7 @@ router.delete('/logout', (req, res, next) => {
   if (req.user) {
     return res.clearCookie('token').sendStatus(204);
   } else {
-    return res.status(404).send({ message: 'No Logged User' });
+    return res.status(404).send({ error: 'No Logged User' });
   }
 });
 
@@ -89,7 +89,7 @@ router.get('/user', (req, res, next) => {
   if (req.user) {
     return res.json(req.user);
   } else {
-    return res.status(404).send({ message: 'No Logged User' });
+    return res.status(404).send({ error: 'No Logged User' });
   }
 });
 

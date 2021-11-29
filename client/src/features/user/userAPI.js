@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 export const fetchUser = async () => {
-  const response = await axios.get('/auth/user');
-  if (response.statusText !== 'OK') {
-    return response.data.message;
+  try {
+    const response = await axios.get('/auth/user');
+
+    return response.data;
+  } catch (err) {
+    throw Error(err.response.data.error);
   }
-  return response.data;
 };
 
 export const register = async (credentials) => {
