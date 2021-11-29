@@ -15,7 +15,7 @@ axios.interceptors.request.use((request) => {
 });
 
 axios.interceptors.response.use((response) => {
-  console.log('AXIOS RESPONSE', response);
+  // console.log('AXIOS RESPONSE', response);
   return response;
 });
 

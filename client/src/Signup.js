@@ -14,9 +14,9 @@ import { FcGoogle } from 'react-icons/fc';
 const Signup = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { data: user } = useSelector((state) => state.user);
+  const { status } = useSelector((state) => state.user);
 
-  if (user?.id) {
+  if (status === 'success') {
     return <Redirect to="/home" />;
   }
 

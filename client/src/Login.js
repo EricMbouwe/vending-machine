@@ -13,7 +13,7 @@ function Login() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { data: user } = useSelector((state) => state.user);
+  const { status, errMessage } = useSelector((state) => state.user);
 
   const formik = useFormik({
     initialValues: {
@@ -32,7 +32,7 @@ function Login() {
       dispatch(loginUser({ username, password })),
   });
 
-  if (user?.id) {
+  if (status === 'success') {
     return <Redirect to="/home" />;
   }
 
@@ -119,6 +119,12 @@ function Login() {
             Sign Up
           </button>
         </div>
+
+        {errMessage.length > 0 ? (
+          <div className="text-center py-3 rounded-lg bg-red-300 text-white">
+            {errMessage}
+          </div>
+        ) : null}
       </div>
     </div>
   );

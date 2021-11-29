@@ -1,16 +1,19 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import Signup from './Signup.js';
 import Login from './Login.js';
 import Home from './components/Home';
+import { fecthUserAsync } from './features/user/userSlice.js';
 
 const Routes = () => {
-  const { data: user, status } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    dispatch(fecthUserAsync());
+  }, [dispatch]);
+
+  const { status } = useSelector((state) => state.user);
 
   return (
     <>
@@ -20,12 +23,20 @@ const Routes = () => {
         <Route
           exact
           path="/"
-          render={() => (user?.id ? <Home /> : <Login />)}
+          render={() =>
+            status === 'success' ? (
+              <Redirect to="/home" />
+            ) : (
+              <Redirect to="/login" />
+            )
+          }
         />
         <Route
           exact
           path="/home"
-          render={() => (user?.id ? <Home /> : <Login />)}
+          render={() =>
+            status === 'success' ? <Home /> : <Redirect to="/login" />
+          }
         />
       </Switch>
     </>

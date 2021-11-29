@@ -85,18 +85,20 @@ export const userSlice = createSlice({
         state.deposit = action.payload?.deposit;
       })
       .addCase(fecthUserAsync.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = action.error.message || '';
         state.deposit = 0;
-        state.errMessage = action.error.message || '';
       })
       .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = 'success';
         state.data = action.payload;
         state.deposit = action.payload?.deposit;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.status = 'failed';
         state.data = action.payload;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = 'success';
         state.data = action.payload;
         state.deposit = action.payload.deposit;
       })
@@ -106,6 +108,7 @@ export const userSlice = createSlice({
         state.errMessage = action.error.message || '';
       })
       .addCase(logoutUser.fulfilled, (state) => {
+        state.status = null;
         state.data = {};
       })
       .addCase(makeDeposit.fulfilled, (state, action) => {
