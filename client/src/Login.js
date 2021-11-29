@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from './features/user/userSlice';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 
 import { FcGoogle } from 'react-icons/fc';
 
@@ -37,10 +37,10 @@ function Login() {
 
   return (
     <div>
-      <div className="login-container container px-4">
+      <div className="login-container container px-4 m-auto max-w-lg">
         <h1 className="font-semibold text-center text-3xl mt-2">Log In</h1>
 
-        <div className="google-auth bg-white my-5 px-5 py-[10px] border-gray-100 border-[1px] rounded-full">
+        <div className="google-auth bg-white my-5 px-5 py-[10px] border-gray-100 border-2 rounded-full">
           <div className="wrapper">
             <button className="w-full">
               <div className="flex items-center justify-center gap-8">
@@ -61,15 +61,14 @@ function Login() {
 
         <form
           onSubmit={handleLogin}
-          className="bg-white my-5 px-5 py-[10px] border-gray-100 border-[1px] rounded-md"
+          className="bg-white my-5 px-8 py-5 border-gray-100 border-2 rounded-xl"
         >
-          <h2 className="text-center my-4">
-            log in using email <address></address>
-          </h2>
+          <h2 className="text-center my-4">Log in using email address</h2>
 
           <div>
-            <div>
+            <div className="mb-6">
               <input
+                className="w-full outline-none border-[1px] rounded-[4px] py-2 px-4 bg-blue-50"
                 aria-label="username"
                 label="Username"
                 name="username"
@@ -81,8 +80,9 @@ function Login() {
               />
             </div>
 
-            <div>
+            <div className="mb-6">
               <input
+                className="w-full outline-none border-[1px] rounded-[4px] py-2 px-4 bg-blue-50"
                 aria-label="password"
                 label="Password"
                 type="password"
@@ -95,15 +95,23 @@ function Login() {
               />
             </div>
 
-            <button className="" type="submit">
-              Login
+            <button
+              className="w-full mb-6 rounded-[4px] bg-blue-700 text-white py-[10px] text-xs"
+              type="submit"
+            >
+              Log in
             </button>
           </div>
         </form>
 
-        <div className="">
+        <div className="text-center">
           <span className="">Need to create an account? </span>
-          <button onClick={() => history.push('/register')}>Sign Up</button>
+          <button
+            className="text-blue-600"
+            onClick={() => history.push('/register')}
+          >
+            Sign Up
+          </button>
         </div>
       </div>
     </div>
