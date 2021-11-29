@@ -1,96 +1,126 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { registerUser } from './features/user/userSlice';
 import { Redirect, useHistory } from 'react-router-dom';
 
-function Signup() {
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import FormFieldErrorStyle from './components/FormFieldErrorStyle';
+import FormFieldStyle from './components/FormFieldStyle';
+
+import { FcGoogle } from 'react-icons/fc';
+
+const Signup = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-
   const { data: user } = useSelector((state) => state.user);
-  const [state, setState] = useState({
-    username: '',
-    password: '',
-    roleId: 1,
-  });
-
-  const { username, password, roleId } = state;
-
-  const handleRegister = async (event) => {
-    event.preventDefault();
-    dispatch(registerUser({ username, password, roleId }));
-  };
-
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setState({
-      ...state,
-      [event.target.name]: value,
-    });
-  };
 
   if (user?.id) {
     return <Redirect to="/home" />;
   }
 
   return (
-    <div>
-      <h1>SIGN UP PAGE</h1>
+    <div className="signup-container container px-4 m-auto max-w-lg">
+      <h1 className="font-semibold text-center text-3xl mt-2">Sign Up</h1>
 
-      <div>
-        <div>
-          <span>Need to log in?</span>
-          <button onClick={() => history.push('/login')}>Login</button>
+      <div className="google-auth bg-white my-5 px-5 py-[10px] border-gray-100 border-2 rounded-full">
+        <div className="wrapper">
+          <button className="w-full">
+            <div className="flex items-center justify-center gap-8">
+              <div className="google-icon">
+                <FcGoogle />
+              </div>
+              <div className="text-blue-500">Sign up using Google</div>
+            </div>
+          </button>
         </div>
+      </div>
 
-        <form onSubmit={handleRegister}>
-          <div>
-            <div>
-              <div>
-                <input
-                  aria-label="username"
-                  label="Username"
-                  name="username"
-                  value={username}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="Username"
-                  required
-                />
-              </div>
+      <div className="divider flex items-center mb-5">
+        <span className="block bg-gray-400 w-full h-[1px]"></span>
+        <span className="block mx-8">or</span>
+        <span className="block bg-gray-400 w-full h-[1px]"></span>
+      </div>
+
+      <Formik
+        initialValues={{ username: '', password: '', roleId: 1 }}
+        validationSchema={Yup.object({
+          username: Yup.string()
+            .max(12, 'Username must be 12 characters or less')
+            .required('Username is required'),
+          password: Yup.string()
+            .min(6, 'Password must be at least 6 characters')
+            .required('Password is required'),
+        })}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            dispatch(registerUser(values));
+            setSubmitting(false);
+          }, 400);
+        }}
+      >
+        {({ isSubmitting }) => (
+          <Form className="bg-white my-5 px-8 py-5 border-gray-100 border-2 rounded-xl">
+            <h2 className="text-center my-4">Log in using email address</h2>
+
+            <div className="mb-6">
+              <Field
+                type="text"
+                name="username"
+                placeholder="Username"
+                as={FormFieldStyle}
+              />
+              <ErrorMessage name="username" component={FormFieldErrorStyle} />
             </div>
 
-            <div>
-              <div>
-                <input
-                  aria-label="password"
-                  label="Password"
-                  type="password"
-                  placeholder="Password"
-                  minLength="6"
-                  name="password"
-                  value={password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div className="mb-6">
+              <Field
+                type="password"
+                name="password"
+                placeholder="Password"
+                as={FormFieldStyle}
+              />
+              <ErrorMessage name="password" component={FormFieldErrorStyle} />
             </div>
 
-            <div>
-              <span>Who are you: </span>
-              <select value={roleId} onChange={handleChange} name="roleId">
-                <option defaultValue={1}>Buyer</option>
-                <option value={2}>Seller</option>
-              </select>
+            <div className="mb-6">
+              <Field
+                name="roleId"
+                as="select"
+                className="w-full text-xs outline-none border-[1px] rounded-[4px] py-2 px-4 bg-blue-50"
+              >
+                <option className="bg-white" value={1}>
+                  Buyer
+                </option>
+                <option className="bg-white" value={2}>
+                  Seller
+                </option>
+              </Field>
             </div>
 
-            <button type="submit">Create</button>
-          </div>
-        </form>
+            <button
+              className="w-full mb-6 border-[1px] border-blue-700 rounded-[4px] bg-blue-700 text-white py-2 text-xs"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              Create Your Account
+            </button>
+          </Form>
+        )}
+      </Formik>
+
+      <div className="text-center mb-6">
+        <span className="">Already have an account? </span>
+        <button
+          className="text-blue-600"
+          onClick={() => history.push('/login')}
+        >
+          Log In
+        </button>
       </div>
     </div>
   );
-}
+};
 
 export default Signup;
