@@ -121,7 +121,7 @@ const Signup = () => {
       </div>
 
       {errMessage.length > 0 ? (
-        <div className="text-center py-3 rounded-lg bg-red-300 text-white">
+        <div className="w-10/12 mx-auto mb-6 text-center py-4 rounded-lg bg-red-400 text-white">
           {errMessage}
         </div>
       ) : null}
