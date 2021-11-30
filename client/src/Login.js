@@ -64,7 +64,7 @@ function Login() {
           onSubmit={formik.handleSubmit}
           className="bg-white my-5 px-8 py-5 border-gray-100 border-2 rounded-xl"
         >
-          <h2 className="text-center my-4">Log in using email address</h2>
+          <h2 className="text-center my-4">Log in using username</h2>
 
           <div>
             <div className="mb-6">

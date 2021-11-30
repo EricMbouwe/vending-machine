@@ -42,10 +42,9 @@ router.get('/seller/:sellerId', async (req, res, next) => {
     });
 
     if (!seller) {
-      return next({
-        status: 404,
-        error: 'The seller with the given id was not found',
-      });
+      return res
+        .status(404)
+        .json({ error: 'The seller with the given id was not found' });
     }
 
     const products = await Product.findProductsBySeller(sellerId);
@@ -161,10 +160,9 @@ async function setProduct(req, res, next) {
 
   // if not existing return 404
   if (!req.product) {
-    return next({
-      status: 404,
-      error: 'The product with the given id was not found',
-    });
+    return res
+      .status(404)
+      .json({ error: 'The product with the given id was not found' });
   }
 
   next();

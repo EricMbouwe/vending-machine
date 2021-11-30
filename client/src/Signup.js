@@ -62,7 +62,7 @@ const Signup = () => {
       >
         {({ isSubmitting }) => (
           <Form className="bg-white my-5 px-8 py-5 border-gray-100 border-2 rounded-xl">
-            <h2 className="text-center my-4">Log in using email address</h2>
+            <h2 className="text-center my-4">Sign up using username</h2>
 
             <div className="mb-6">
               <Field

@@ -17,10 +17,9 @@ router.get('/:username', async (req, res, next) => {
     });
 
     if (!user) {
-      return next({
-        status: 404,
-        error: 'The user with the given id does not exist!',
-      });
+      return res
+        .status(404)
+        .json({ error: 'The user with the given id does not exist!' });
     }
 
     res.json(user);
@@ -52,7 +51,7 @@ router.post('/deposit', authRole('buyer'), async (req, res, next) => {
 
     if (!denominations.includes(amount)) {
       console.log({ error: 'This amount is not allowed' });
-      return res.status(403).send({ error: 'This amount is not allowed' });
+      return res.status(403).json({ error: 'This amount is not allowed' });
     }
 
     const newAmount = user.deposit + amount;
@@ -111,7 +110,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
         error: 'Sorry the product with the given id is not available',
       });
 
-      return res.status(404).send({
+      return res.status(404).json({
         error: 'Sorry the product with the given id is not available',
       });
     }
@@ -146,7 +145,7 @@ router.post('/buy', authRole('buyer'), async (req, res, next) => {
         error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
       });
 
-      return res.status(403).send({
+      return res.status(403).json({
         error: `Sorry there is only ${count} unit(s) of ${product.productName} available`,
       });
     }
